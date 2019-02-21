@@ -299,6 +299,28 @@ public class Home extends javax.swing.JFrame {
         current_month_savings_stat = new javax.swing.JLabel();
         jLabel39 = new javax.swing.JLabel();
         jLabel62 = new javax.swing.JLabel();
+        savings_panel = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        jLabel58 = new javax.swing.JLabel();
+        jLabel59 = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel46 = new javax.swing.JLabel();
+        t_savings = new javax.swing.JRadioButton();
+        t_withdrawals = new javax.swing.JRadioButton();
+        jLabel47 = new javax.swing.JLabel();
+        jLabel48 = new javax.swing.JLabel();
+        transaction_amount = new javax.swing.JTextField();
+        transaction_date = new javax.swing.JTextField();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel49 = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JSeparator();
+        jLabel50 = new javax.swing.JLabel();
+        transaction_balance = new javax.swing.JLabel();
+        jSeparator9 = new javax.swing.JSeparator();
+        jSeparator10 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        transaction_summary = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
         income_panel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel17 = new javax.swing.JPanel();
@@ -344,28 +366,6 @@ public class Home extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JSeparator();
         jSeparator6 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
-        savings_panel = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel58 = new javax.swing.JLabel();
-        jLabel59 = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel46 = new javax.swing.JLabel();
-        t_savings = new javax.swing.JRadioButton();
-        t_withdrawals = new javax.swing.JRadioButton();
-        jLabel47 = new javax.swing.JLabel();
-        jLabel48 = new javax.swing.JLabel();
-        transaction_amount = new javax.swing.JTextField();
-        transaction_date = new javax.swing.JTextField();
-        jPanel11 = new javax.swing.JPanel();
-        jLabel49 = new javax.swing.JLabel();
-        jSeparator8 = new javax.swing.JSeparator();
-        jLabel50 = new javax.swing.JLabel();
-        transaction_balance = new javax.swing.JLabel();
-        jSeparator9 = new javax.swing.JSeparator();
-        jSeparator10 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        transaction_summary = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
         excenses_panel = new javax.swing.JPanel();
         jPanel12 = new javax.swing.JPanel();
         jLabel43 = new javax.swing.JLabel();
@@ -411,6 +411,9 @@ public class Home extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Budget Analyzer");
         setBackground(new java.awt.Color(255, 255, 255));
+        setMaximumSize(new java.awt.Dimension(1185, 725));
+        setMinimumSize(new java.awt.Dimension(1185, 725));
+        setPreferredSize(new java.awt.Dimension(1185, 725));
         setResizable(false);
 
         sidepane.setBackground(new java.awt.Color(51, 51, 51));
@@ -569,10 +572,13 @@ public class Home extends javax.swing.JFrame {
         contentpane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         home_panel.setBackground(new java.awt.Color(255, 255, 255));
+        home_panel.setMaximumSize(new java.awt.Dimension(905, 714));
+        home_panel.setMinimumSize(new java.awt.Dimension(905, 714));
+        home_panel.setPreferredSize(new java.awt.Dimension(905, 714));
         home_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         budget_summary_chart.setLayout(new javax.swing.BoxLayout(budget_summary_chart, javax.swing.BoxLayout.LINE_AXIS));
-        home_panel.add(budget_summary_chart, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 350));
+        home_panel.add(budget_summary_chart, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 350));
 
         jPanel16.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -593,26 +599,28 @@ public class Home extends javax.swing.JFrame {
         balance_btn.setLayout(balance_btnLayout);
         balance_btnLayout.setHorizontalGroup(
             balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, balance_btnLayout.createSequentialGroup()
-                .addGap(40, 40, 40)
+            .addGroup(balance_btnLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addComponent(jLabel65)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
                 .addGroup(balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(current_month_balance_stat)
                     .addComponent(jLabel60))
-                .addGap(51, 51, 51))
+                .addGap(35, 35, 35))
         );
         balance_btnLayout.setVerticalGroup(
             balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(balance_btnLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
                 .addGroup(balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(balance_btnLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
                         .addComponent(jLabel60)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_balance_stat)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addComponent(current_month_balance_stat))
+                    .addGroup(balance_btnLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
@@ -632,27 +640,25 @@ public class Home extends javax.swing.JFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(35, 35, 35)
                 .addComponent(jLabel63)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel40)
                     .addComponent(current_month_income_stat))
-                .addGap(49, 49, 49))
+                .addGap(36, 36, 36))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel63, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
                         .addComponent(jLabel40)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_income_stat))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel63, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(current_month_income_stat)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -674,25 +680,25 @@ public class Home extends javax.swing.JFrame {
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(28, 28, 28)
                 .addComponent(jLabel64)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel45)
-                    .addComponent(current_month_expense_stat))
-                .addGap(46, 46, 46))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel45, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(current_month_expense_stat, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(31, 31, 31))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel64, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel45)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(current_month_expense_stat)))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
@@ -714,25 +720,26 @@ public class Home extends javax.swing.JFrame {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(37, 37, 37)
                 .addComponent(jLabel62)
-                .addGap(72, 72, 72)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(current_month_savings_stat, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel39, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addGap(36, 36, 36))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel39)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(current_month_savings_stat)
+                .addGap(22, 22, 22))
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel62, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel39)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_savings_stat)))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel62, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
@@ -740,293 +747,38 @@ public class Home extends javax.swing.JFrame {
         jPanel16Layout.setHorizontalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(53, 53, 53)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(balance_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(117, Short.MAX_VALUE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(37, 37, 37)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
 
         home_panel.add(jPanel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 350, 940, 410));
 
-        contentpane.add(home_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 760));
-
-        income_panel.setBackground(new java.awt.Color(255, 255, 255));
-        income_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
-
-        jPanel17.setBackground(new java.awt.Color(33, 150, 243));
-        jPanel17.setOpaque(false);
-
-        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
-        jPanel17.setLayout(jPanel17Layout);
-        jPanel17Layout.setHorizontalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 305, Short.MAX_VALUE)
-        );
-        jPanel17Layout.setVerticalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
-        );
-
-        jLabel41.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_64px.png"))); // NOI18N
-
-        jLabel42.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
-        jLabel42.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel42.setText("SAVINGS");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(346, Short.MAX_VALUE)
-                .addComponent(jLabel41)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel41)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        income_panel.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 120));
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel12.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel12.setText("Income Method");
-        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 122, -1, -1));
-
-        main_income.setBackground(new java.awt.Color(255, 255, 255));
-        income_category.add(main_income);
-        main_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        main_income.setText("Main Income");
-        main_income.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                main_incomeActionPerformed(evt);
-            }
-        });
-        jPanel3.add(main_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 118, -1, -1));
-
-        other_income.setBackground(new java.awt.Color(255, 255, 255));
-        income_category.add(other_income);
-        other_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        other_income.setText("Other");
-        other_income.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                other_incomeActionPerformed(evt);
-            }
-        });
-        jPanel3.add(other_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 118, -1, -1));
-
-        jLabel13.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel13.setText("Amount (Rs.)");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 276, -1, 28));
-
-        jLabel14.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel14.setText("Income Date");
-        jPanel3.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 200, -1, -1));
-
-        income_amount.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel3.add(income_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 276, 263, -1));
-
-        income_date.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel3.add(income_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 197, 263, -1));
-
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel15.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel15.setText("TOTAL (Rs.)");
-        jPanel4.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 592, -1, 28));
-        jPanel4.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 579, 321, -1));
-
-        jLabel17.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel17.setText("Monthly Income Summary");
-        jPanel4.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(52, 11, -1, 28));
-
-        current_year_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_year_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        current_year_income.setText("200,000.00");
-        jPanel4.add(current_year_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(164, 592, 125, 28));
-
-        jLabel18.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel18.setText("January");
-        jPanel4.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 58, -1, 28));
-
-        jLabel19.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel19.setText("Feburary");
-        jPanel4.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 98, -1, 28));
-
-        jLabel20.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel20.setText("March");
-        jPanel4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 133, -1, 28));
-
-        jLabel21.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel21.setText("May");
-        jPanel4.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 213, -1, 28));
-
-        jLabel22.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel22.setText("April");
-        jPanel4.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 173, -1, 28));
-
-        jLabel23.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel23.setText("July");
-        jPanel4.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 293, -1, 28));
-
-        jLabel24.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel24.setText("June");
-        jPanel4.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 253, -1, 28));
-
-        jLabel25.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel25.setText("October");
-        jPanel4.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 410, -1, 28));
-
-        jLabel26.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel26.setText("August");
-        jPanel4.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 332, -1, 28));
-
-        jLabel27.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel27.setText("December");
-        jPanel4.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 488, -1, 28));
-
-        jLabel28.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel28.setText("November");
-        jPanel4.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 449, -1, 28));
-
-        jLabel29.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel29.setText("September");
-        jPanel4.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 371, -1, 28));
-
-        feb_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        feb_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        feb_month_income.setText("1000");
-        feb_month_income.setToolTipText("");
-        jPanel4.add(feb_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 97, 125, 28));
-
-        jun_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jun_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jun_month_income.setText("1000");
-        jun_month_income.setToolTipText("");
-        jPanel4.add(jun_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 252, 125, 28));
-
-        jan_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jan_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jan_month_income.setText("1000");
-        jan_month_income.setToolTipText("");
-        jPanel4.add(jan_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 57, 125, 28));
-
-        oct_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        oct_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        oct_month_income.setText("1000");
-        oct_month_income.setToolTipText("");
-        jPanel4.add(oct_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 410, 125, 28));
-
-        mar_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        mar_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        mar_month_income.setText("1000");
-        mar_month_income.setToolTipText("");
-        jPanel4.add(mar_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 132, 125, 28));
-
-        jul_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jul_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jul_month_income.setText("1000");
-        jul_month_income.setToolTipText("");
-        jPanel4.add(jul_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 292, 125, 28));
-
-        aug_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        aug_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        aug_month_income.setText("1000");
-        aug_month_income.setToolTipText("");
-        jPanel4.add(aug_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 332, 125, 28));
-
-        sep_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        sep_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        sep_month_income.setText("1000");
-        sep_month_income.setToolTipText("");
-        jPanel4.add(sep_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 371, 125, 28));
-
-        apr_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        apr_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        apr_month_income.setText("1000");
-        apr_month_income.setToolTipText("");
-        jPanel4.add(apr_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 172, 125, 28));
-
-        nov_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        nov_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        nov_month_income.setText("1000");
-        nov_month_income.setToolTipText("");
-        jPanel4.add(nov_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 449, 125, 28));
-
-        may_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        may_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        may_month_income.setText("1000");
-        may_month_income.setToolTipText("");
-        jPanel4.add(may_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 212, 125, 28));
-
-        dec_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        dec_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        dec_month_income.setText("1000");
-        dec_month_income.setToolTipText("");
-        jPanel4.add(dec_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 488, 125, 28));
-        jPanel4.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 626, 103, -1));
-        jPanel4.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 628, 103, -1));
-
-        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 0, -1, 640));
-
-        jButton1.setBackground(new java.awt.Color(33, 150, 243));
-        jButton1.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jButton1.setText("Submit");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
-            }
-        });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 361, 112, 41));
-
-        income_panel.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 940, 640));
-
-        contentpane.add(income_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 760));
+        contentpane.add(home_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         savings_panel.setBackground(new java.awt.Color(255, 255, 255));
+        savings_panel.setMaximumSize(new java.awt.Dimension(905, 714));
+        savings_panel.setMinimumSize(new java.awt.Dimension(905, 714));
+        savings_panel.setPreferredSize(new java.awt.Dimension(905, 714));
         savings_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel9.setBackground(new java.awt.Color(102, 102, 102));
@@ -1110,8 +862,8 @@ public class Home extends javax.swing.JFrame {
 
         jLabel49.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         jLabel49.setText("TOTAL (Rs.)");
-        jPanel11.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 592, -1, 28));
-        jPanel11.add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 579, 321, -1));
+        jPanel11.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 530, -1, 28));
+        jPanel11.add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 501, 321, 10));
 
         jLabel50.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         jLabel50.setText("Monthly Transactions Summary");
@@ -1119,10 +871,10 @@ public class Home extends javax.swing.JFrame {
 
         transaction_balance.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         transaction_balance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        transaction_balance.setText("200,000.00");
-        jPanel11.add(transaction_balance, new org.netbeans.lib.awtextra.AbsoluteConstraints(164, 592, 125, 28));
-        jPanel11.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 626, 103, -1));
-        jPanel11.add(jSeparator10, new org.netbeans.lib.awtextra.AbsoluteConstraints(195, 628, 103, -1));
+        transaction_balance.setText("0.00");
+        jPanel11.add(transaction_balance, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 530, 125, 28));
+        jPanel11.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 558, 110, 10));
+        jPanel11.add(jSeparator10, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 560, 110, 10));
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -1149,9 +901,9 @@ public class Home extends javax.swing.JFrame {
         transaction_summary.setSurrendersFocusOnKeystroke(true);
         jScrollPane1.setViewportView(transaction_summary);
 
-        jPanel11.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 300, 510));
+        jPanel11.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 300, 440));
 
-        jPanel10.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 0, -1, 640));
+        jPanel10.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 0, -1, 640));
 
         jButton3.setBackground(new java.awt.Color(33, 150, 243));
         jButton3.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
@@ -1173,9 +925,277 @@ public class Home extends javax.swing.JFrame {
 
         savings_panel.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 940, 640));
 
-        contentpane.add(savings_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 760));
+        contentpane.add(savings_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        income_panel.setBackground(new java.awt.Color(255, 255, 255));
+        income_panel.setMaximumSize(new java.awt.Dimension(905, 714));
+        income_panel.setMinimumSize(new java.awt.Dimension(905, 714));
+        income_panel.setOpaque(false);
+        income_panel.setPreferredSize(new java.awt.Dimension(905, 714));
+        income_panel.setRequestFocusEnabled(false);
+        income_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
+
+        jPanel17.setBackground(new java.awt.Color(33, 150, 243));
+        jPanel17.setOpaque(false);
+
+        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
+        jPanel17.setLayout(jPanel17Layout);
+        jPanel17Layout.setHorizontalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 305, Short.MAX_VALUE)
+        );
+        jPanel17Layout.setVerticalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 110, Short.MAX_VALUE)
+        );
+
+        jLabel41.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_64px.png"))); // NOI18N
+
+        jLabel42.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
+        jLabel42.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel42.setText("SAVINGS");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(346, Short.MAX_VALUE)
+                .addComponent(jLabel41)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(72, 72, 72)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel41)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        income_panel.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 120));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setMinimumSize(new java.awt.Dimension(899, 714));
+        jPanel3.setPreferredSize(new java.awt.Dimension(899, 714));
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel12.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel12.setText("Income Method");
+        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 122, -1, -1));
+
+        main_income.setBackground(new java.awt.Color(255, 255, 255));
+        income_category.add(main_income);
+        main_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        main_income.setText("Main Income");
+        main_income.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                main_incomeActionPerformed(evt);
+            }
+        });
+        jPanel3.add(main_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 118, -1, -1));
+
+        other_income.setBackground(new java.awt.Color(255, 255, 255));
+        income_category.add(other_income);
+        other_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        other_income.setText("Other");
+        other_income.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                other_incomeActionPerformed(evt);
+            }
+        });
+        jPanel3.add(other_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 118, -1, -1));
+
+        jLabel13.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel13.setText("Amount (Rs.)");
+        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 276, -1, 28));
+
+        jLabel14.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel14.setText("Income Date");
+        jPanel3.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 200, -1, -1));
+
+        income_amount.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jPanel3.add(income_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 276, 263, -1));
+
+        income_date.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jPanel3.add(income_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 197, 263, -1));
+
+        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel15.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel15.setText("TOTAL (Rs.)");
+        jPanel4.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 540, -1, 28));
+        jPanel4.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 521, 321, 10));
+
+        jLabel17.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jLabel17.setText("Monthly Income Summary");
+        jPanel4.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(52, 11, -1, 28));
+
+        current_year_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        current_year_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        current_year_income.setText("0.00");
+        jPanel4.add(current_year_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 540, 125, 28));
+
+        jLabel18.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel18.setText("January");
+        jPanel4.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 58, -1, 28));
+
+        jLabel19.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel19.setText("Feburary");
+        jPanel4.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 98, -1, 28));
+
+        jLabel20.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel20.setText("March");
+        jPanel4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 133, -1, 28));
+
+        jLabel21.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel21.setText("May");
+        jPanel4.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 213, -1, 28));
+
+        jLabel22.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel22.setText("April");
+        jPanel4.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 173, -1, 28));
+
+        jLabel23.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel23.setText("July");
+        jPanel4.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 293, -1, 28));
+
+        jLabel24.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel24.setText("June");
+        jPanel4.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 253, -1, 28));
+
+        jLabel25.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel25.setText("October");
+        jPanel4.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 410, -1, 28));
+
+        jLabel26.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel26.setText("August");
+        jPanel4.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 332, -1, 28));
+
+        jLabel27.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel27.setText("December");
+        jPanel4.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 488, -1, 28));
+
+        jLabel28.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel28.setText("November");
+        jPanel4.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 449, -1, 28));
+
+        jLabel29.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
+        jLabel29.setText("September");
+        jPanel4.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 371, -1, 28));
+
+        feb_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        feb_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        feb_month_income.setText("0.00");
+        feb_month_income.setToolTipText("");
+        jPanel4.add(feb_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 97, 125, 28));
+
+        jun_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jun_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jun_month_income.setText("0.00");
+        jun_month_income.setToolTipText("");
+        jPanel4.add(jun_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 252, 125, 28));
+
+        jan_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jan_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jan_month_income.setText("0.00");
+        jan_month_income.setToolTipText("");
+        jPanel4.add(jan_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 57, 125, 28));
+
+        oct_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        oct_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        oct_month_income.setText("0.00");
+        oct_month_income.setToolTipText("");
+        jPanel4.add(oct_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 410, 125, 28));
+
+        mar_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        mar_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        mar_month_income.setText("0.00");
+        mar_month_income.setToolTipText("");
+        jPanel4.add(mar_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 132, 125, 28));
+
+        jul_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jul_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jul_month_income.setText("0.00");
+        jul_month_income.setToolTipText("");
+        jPanel4.add(jul_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 292, 125, 28));
+
+        aug_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        aug_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        aug_month_income.setText("0.00");
+        aug_month_income.setToolTipText("");
+        jPanel4.add(aug_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 332, 125, 28));
+
+        sep_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        sep_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        sep_month_income.setText("0.00");
+        sep_month_income.setToolTipText("");
+        jPanel4.add(sep_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 371, 125, 28));
+
+        apr_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        apr_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        apr_month_income.setText("0.00");
+        apr_month_income.setToolTipText("");
+        jPanel4.add(apr_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 172, 125, 28));
+
+        nov_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        nov_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        nov_month_income.setText("0.00");
+        nov_month_income.setToolTipText("");
+        jPanel4.add(nov_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 449, 125, 28));
+
+        may_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        may_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        may_month_income.setText("0.00");
+        may_month_income.setToolTipText("");
+        jPanel4.add(may_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 212, 125, 28));
+
+        dec_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        dec_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        dec_month_income.setText("0.00");
+        dec_month_income.setToolTipText("");
+        jPanel4.add(dec_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 488, 125, 28));
+        jPanel4.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 568, 100, 10));
+        jPanel4.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 570, 100, 10));
+
+        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 0, 310, 630));
+
+        jButton1.setBackground(new java.awt.Color(33, 150, 243));
+        jButton1.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        jButton1.setText("Submit");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 361, 112, 41));
+
+        income_panel.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 900, 640));
+
+        contentpane.add(income_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         excenses_panel.setBackground(new java.awt.Color(255, 255, 255));
+        excenses_panel.setMaximumSize(new java.awt.Dimension(905, 714));
+        excenses_panel.setMinimumSize(new java.awt.Dimension(905, 714));
+        excenses_panel.setPreferredSize(new java.awt.Dimension(905, 714));
         excenses_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel12.setBackground(new java.awt.Color(102, 102, 102));
@@ -1259,31 +1279,31 @@ public class Home extends javax.swing.JFrame {
 
         e_bills.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_bills.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_bills.setText("Bills");
+        e_bills.setText("0.00");
 
         e_tax.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_tax.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_tax.setText("Bills");
+        e_tax.setText("0.00");
 
         e_dry_food.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_dry_food.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_dry_food.setText("Bills");
+        e_dry_food.setText("0.00");
 
         e_medication.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_medication.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_medication.setText("Bills");
+        e_medication.setText("0.00");
 
         e_grocery.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_grocery.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_grocery.setText("Bills");
+        e_grocery.setText("0.00");
 
         e_transport.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_transport.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_transport.setText("Bills");
+        e_transport.setText("0.00");
 
         e_emergency.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         e_emergency.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_emergency.setText("Bills");
+        e_emergency.setText("0.00");
 
         jLabel35.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
         jLabel35.setText("Expenses");
@@ -1307,38 +1327,6 @@ public class Home extends javax.swing.JFrame {
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(jLabel55))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel14Layout.createSequentialGroup()
-                                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel54)
-                                            .addComponent(jLabel36))
-                                        .addGap(55, 55, 55))
-                                    .addGroup(jPanel14Layout.createSequentialGroup()
-                                        .addComponent(jLabel35)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(e_emergency1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(current_month_balance, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(current_month_expenses, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(current_month_income, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1362,6 +1350,39 @@ public class Home extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jSeparator11, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(195, 195, 195)
+                        .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(195, 195, 195)
+                        .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel55))
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel14Layout.createSequentialGroup()
+                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel14Layout.createSequentialGroup()
+                                        .addComponent(jLabel36)
+                                        .addGap(97, 97, 97))
+                                    .addGroup(jPanel14Layout.createSequentialGroup()
+                                        .addComponent(jLabel35)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(e_emergency1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(current_month_expenses, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(current_month_income, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel14Layout.createSequentialGroup()
+                                .addComponent(jLabel54)
+                                .addGap(52, 52, 52)
+                                .addComponent(current_month_balance, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1396,28 +1417,28 @@ public class Home extends javax.swing.JFrame {
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel34)
                     .addComponent(e_emergency))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel36)
                     .addComponent(current_month_income, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(current_month_expenses, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(e_emergency1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(2, 2, 2)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(current_month_balance, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         jButton4.setBackground(new java.awt.Color(33, 150, 243));
@@ -1471,8 +1492,9 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(expense_date, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(expense_item, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(expense_category, javax.swing.GroupLayout.Alignment.LEADING, 0, 260, Short.MAX_VALUE)))
-                .addGap(88, 88, 88)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
         jPanel13Layout.setVerticalGroup(
             jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1498,12 +1520,12 @@ public class Home extends javax.swing.JFrame {
                         .addGap(62, 62, 62)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         excenses_panel.add(jPanel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 940, 640));
 
-        contentpane.add(excenses_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 760));
+        contentpane.add(excenses_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1898,7 +1920,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -1909,7 +1930,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
