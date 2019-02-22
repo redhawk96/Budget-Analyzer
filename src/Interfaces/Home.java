@@ -1,257 +1,337 @@
-package Interfaces;
-
-import java.awt.Color;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import budget.analyzer.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import net.proteanit.sql.DbUtils;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Interfaces;
+
+import budget.analyzer.Expense;
+import budget.analyzer.Income;
+import budget.analyzer.Capital;
+import budget.analyzer.Statistics;
+import java.awt.Color;
+import javax.swing.JPanel;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.proteanit.sql.DbUtils;
+
 /**
  *
  * @author Redhw
  */
 public class Home extends javax.swing.JFrame {
 
-    private String currentDate;
-    private String currentMonth;
-    private String currentYear;
-    private ResultSet rs;
-    private Double month_balance;
-    private Double month_expenses;
-    private Double month_income;
-    private DecimalFormat doubleFormat = new DecimalFormat("#.00");
+    private String current_date;
+    private String current_month;
+    private String current_year;
 
     public Home() {
         initComponents();
 
-        home_panel.setVisible(true);
-        income_panel.setVisible(false);
-        savings_panel.setVisible(false);
-        excenses_panel.setVisible(false);
-
         try {
             getDate();
-            getMonth();
-            getYear();
-            setNewMonth();
-            yearlyStatistics();
-            monthlyExpenses();
-            monthlyStatistics();
+            getStatistics();
+
+            dashboard_panel.setVisible(true);
+            capital_panel.setVisible(false);
+            income_panel.setVisible(false);
+            expense_panel.setVisible(false);
+            administrator_panel.setVisible(false);
+            admin_dashboard_panel.setVisible(false);
+
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
         }
+
     }
 
     void setColor(JPanel panel) {
-        panel.setBackground(new Color(12, 135, 235));
-    }
 
-    void resetColor(JPanel panel) {
-        panel.setBackground(new Color(11, 120, 209));
-    }
+        try {
 
-    void getDate() throws ParseException {
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        currentDate = dateFormat.format(date);
-    }
+            panel.setBackground(new Color(12, 135, 235));
 
-    void getYear() throws ParseException {
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
-        currentYear = dateFormat.format(date);
-    }
-
-    void getMonth() throws ParseException {
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
-        currentMonth = dateFormat.format(date);
-    }
-
-    void setNewMonth() throws ClassNotFoundException, SQLException {
-
-        Counter counter = new Counter();
-
-        boolean hasMonth = counter.getMonthFirst(Integer.parseInt(currentYear));
-
-        if (hasMonth == false) {
-            Income i = new Income();
-            Expense e = new Expense();
-            Transaction t = new Transaction();
-
-            counter.setMonthFirst(Integer.parseInt(currentYear));
-
-            for (int r = 01; r <= 12; r++) {
-                i.setIncome("MS", "0", "2019-" + r + "-01");
-                e.setExpense("MS", "Item", "2019-" + r + "-01", "0");
-                t.setTransaction("Deposit", "2019-" + r + "-01", "0");
-                t.setTransaction("Withdrawal", "2019-" + r + "-01", "0");
-            }
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
         }
     }
 
-    void monthlyIncome() throws SQLException, ClassNotFoundException {
-        Income income = new Income();
+    void resetColor(JPanel panel) {
 
-        jan_month_income.setText(income.monthlyIncome(1));
-        feb_month_income.setText(income.monthlyIncome(2));
-        mar_month_income.setText(income.monthlyIncome(3));
-        apr_month_income.setText(income.monthlyIncome(4));
-        may_month_income.setText(income.monthlyIncome(5));
-        jun_month_income.setText(income.monthlyIncome(6));
-        jul_month_income.setText(income.monthlyIncome(7));
-        aug_month_income.setText(income.monthlyIncome(8));
-        sep_month_income.setText(income.monthlyIncome(9));
-        oct_month_income.setText(income.monthlyIncome(10));
-        nov_month_income.setText(income.monthlyIncome(11));
-        dec_month_income.setText(income.monthlyIncome(12));
+        try {
 
-        String monthly_income = income.yearTotal().toString();
-        current_year_income.setText(monthly_income + "0");
+            panel.setBackground(new Color(11, 120, 209));
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
     }
 
-    void monthlyTransactions() throws ClassNotFoundException, SQLException {
+    void getDate() throws ParseException {
 
-        Transaction transaction = new Transaction();
-        Income income_balance = new Income();
-        
-        rs = transaction.getMonthlyTransactions(currentMonth);
-        transaction_summary.setModel(DbUtils.resultSetToTableModel(rs));
-        transaction_balance.setText(transaction.getYearBalance() + "0".toString());
+        try {
+            Date date = new Date();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            current_date = dateFormat.format(date);
+
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+            current_month = monthFormat.format(date);
+
+            SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+            current_year = yearFormat.format(date);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
     }
 
-    void monthlyExpenses() throws SQLException, ClassNotFoundException {
-        Expense expense = new Expense();
-        Income income_balance = new Income();
-        
-        e_bills.setText(expense.getExpenseCategoryTotal("Bills", currentMonth));
-        e_tax.setText(expense.getExpenseCategoryTotal("Tax", currentMonth));
-        e_grocery.setText(expense.getExpenseCategoryTotal("Grocery", currentMonth));
-        e_dry_food.setText(expense.getExpenseCategoryTotal("Dry Food", currentMonth));
-        e_medication.setText(expense.getExpenseCategoryTotal("Medication", currentMonth));
-        e_transport.setText(expense.getExpenseCategoryTotal("Transport", currentMonth));
-        e_emergency.setText(expense.getExpenseCategoryTotal("Emergency", currentMonth));
+    void refreshCapitalPanel() {
 
-        month_income = Double.parseDouble(income_balance.monthlyIncome(Integer.parseInt(currentMonth)));
-        month_expenses = expense.getMonthlyTotalExpenses(currentMonth);
-        month_balance = month_income-month_expenses;
-        
-        current_month_income.setText(month_income.toString());
-        current_month_expenses.setText(month_expenses.toString());
-        current_month_balance.setText(month_balance.toString());
+        try {
+
+            Capital cap = new Capital();
+            ResultSet rs = cap.getCurrentMonthCapitalTransactions(current_month);
+            capital_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
     }
 
-    void yearlyStatistics() throws SQLException, ClassNotFoundException {
+    void refreshIncomePanel() {
 
-        Income monthlyIncomeStats = new Income();
-        Expense monthlyExpenseStats = new Expense();
-        Transaction monthlyTransactions = new Transaction();
+        try {
 
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("1"), "Savings", "JAN");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(1)), "Income", "JAN");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("1"), "Expenses", "JAN");
+            Income inc = new Income();
+            ResultSet rs = inc.getCurrentMonthIncomeTransactions(current_month);
+            income_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
 
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("2"), "Savings", "FEB");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(2)), "Income", "FEB");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("2"), "Expenses", "FEB");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("3"), "Savings", "MAR");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(3)), "Income", "MAR");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("3"), "Expenses", "MAR");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("4"), "Savings", "APR");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(4)), "Income", "APR");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("4"), "Expenses", "APR");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("5"), "Savings", "MAY");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(5)), "Income", "MAY");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("5"), "Expenses", "MAY");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("6"), "Savings", "JUN");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(6)), "Income", "JUN");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("6"), "Expenses", "JUN");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("7"), "Savings", "JUL");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(7)), "Income", "JUL");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("7"), "Expenses", "JUL");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("8"), "Savings", "AUG");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(8)), "Income", "AUG");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("8"), "Expenses", "AUG");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("9"), "Savings", "SEP");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(9)), "Income", "SEP");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("9"), "Expenses", "SEP");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("10"), "Savings", "OCT");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(10)), "Income", "OCT");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("10"), "Expenses", "OCT");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("11"), "Savings", "NOV");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(11)), "Income", "NOV");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("11"), "Expenses", "NOV");
-
-        // Population in 2005  
-        dataset.addValue(monthlyTransactions.getMonthlyBalance("12"), "Savings", "DEC");
-        dataset.addValue(Integer.parseInt(monthlyIncomeStats.monthlyIncome(12)), "Income", "DEC");
-        dataset.addValue(monthlyExpenseStats.getMonthlyTotalExpenses("12"), "Expenses", "DEC");
-
-        JFreeChart chart = ChartFactory.createBarChart("", "", "", dataset, PlotOrientation.VERTICAL, true, true, false);
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.setRangeGridlinePaint(Color.BLACK);
-        chart.getPlot().setBackgroundPaint(Color.WHITE);
-        plot.setOutlineVisible(false);
-
-        ChartPanel chartPanel = new ChartPanel(chart);
-
-        budget_summary_chart.removeAll();
-        budget_summary_chart.add(chartPanel);
-        budget_summary_chart.updateUI();
-
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
     }
-    
-    void monthlyStatistics() throws SQLException, ClassNotFoundException{
-        
-        Transaction transaction_stat = new Transaction();
-        
-        current_month_savings_stat.setText("Rs. "+transaction_stat.getMonthlyBalance(currentMonth).toString());
-        current_month_balance_stat.setText("Rs. "+month_balance.toString());
-        current_month_income_stat.setText("Rs. "+month_income.toString());
-        current_month_expense_stat.setText("Rs. "+month_expenses.toString());
+
+    void refreshExpensePanel() {
+
+        try {
+
+            Expense exp = new Expense();
+            ResultSet rs = exp.getCurrentMonthExpenseTransactions(current_month);
+            expense_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void resetCapitalValues() {
+
+        try {
+
+            input_capital_group.clearSelection();
+            input_capital_bank_name.setText(null);
+            input_capital_date.setDate(null);
+            update_capital_date.setText(null);
+            input_capital_amount.setText(null);
+            input_capital_addtional_information.setText(null);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void resetIncomeValues() {
+
+        try {
+
+            input_income_group.clearSelection();
+            input_income_type.setText(null);
+            input_income_date.setDate(null);
+            update_income_date.setText(null);
+            input_income_amount.setText(null);
+            input_income_addtional_information.setText(null);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void resetExpenseValues() {
+
+        try {
+
+            input_expense_type.setSelectedIndex(0);
+            input_expense_item_name.setText(null);
+            input_expense_date.setDate(null);
+            update_expense_date.setText(null);
+            update_expense_date.setText(null);
+            input_expense_amount.setText(null);
+            input_expense_addtional_information.setText(null);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void setCapitalSubmitInterface() {
+
+        try {
+
+            input_capital_date.setVisible(true);
+            update_capital_date.setVisible(false);
+            button_submit_capital.setVisible(true);
+            button_update_capital.setVisible(false);
+            button_reset_capital_fields.setVisible(false);
+            capital_transaction_label.setVisible(false);
+            capital_transaction_id.setVisible(false);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void setIncomeSubmitInterface() {
+
+        try {
+
+            input_income_date.setVisible(true);
+            update_income_date.setVisible(false);
+            button_submit_income.setVisible(true);
+            button_update_income.setVisible(false);
+            button_reset_income_fields.setVisible(false);
+            income_transaction_label.setVisible(false);
+            income_transaction_id.setVisible(false);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void setExpenseSubmitInterface() {
+
+        try {
+
+            input_expense_date.setVisible(true);
+            update_expense_date.setVisible(false);
+            button_submit_expense.setVisible(true);
+            button_update_expense.setVisible(false);
+            button_reset_expense_fields.setVisible(false);
+            expense_transaction_label.setVisible(false);
+            expense_transaction_id.setVisible(false);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void getStatistics() {
+
+        try {
+            Statistics stat = new Statistics(current_month);
+
+            current_month_savings_stat.setText(stat.getCapitalBalance().toString());
+
+            current_month_income_stat.setText(stat.getCurrentMonthIncomeBalance().toString());
+
+            current_month_expense_stat.setText(stat.getCurrentMonthExpenseBalance().toString());
+
+            current_month_balance_stat.setText(stat.getCurrentMonthBalance().toString());
+
+            ResultSet rs = stat.getCurrentMonthExpenseTotal();
+            expense_statistics_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+            ResultSet rs1 = stat.getCurrentMonthIncomeTotal();
+            income_statistics_table.setModel(DbUtils.resultSetToTableModel(rs1));
+
+            ResultSet rs2 = stat.getCurrentMonthCapitalTotal();
+            capital_statistics_table.setModel(DbUtils.resultSetToTableModel(rs2));
+
+            ResultSet rs3 = stat.getDetailedCapitalBlance();
+            detailed_capital_statistics_table.setModel(DbUtils.resultSetToTableModel(rs3));
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void displaySuccessMessage(String message) {
+
+        try {
+
+            Success_Message s_message = new Success_Message();
+            s_message.setMessage(message);
+            s_message.setVisible(true);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void displayErrorMessage(Exception e) {
+
+        try {
+
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+
+        } catch (Exception ex) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(ex.getMessage());
+            e_message.setVisible(true);
+        }
+    }
+
+    void displayCustomErrorMessage(String message) {
+
+        try {
+
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(message);
+            e_message.setVisible(true);
+
+        } catch (Exception e) {
+            Error_Message e_message = new Error_Message();
+            e_message.setMessage(e.getMessage());
+            e_message.setVisible(true);
+        }
     }
 
     /**
@@ -261,28 +341,37 @@ public class Home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        income_category = new javax.swing.ButtonGroup();
-        transaction_category = new javax.swing.ButtonGroup();
-        sidepane = new javax.swing.JPanel();
-        btn_savings = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        btn_home = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        btn_income = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        btn_expenses = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jLabel10 = new javax.swing.JLabel();
-        contentpane = new javax.swing.JPanel();
-        home_panel = new javax.swing.JPanel();
-        budget_summary_chart = new javax.swing.JPanel();
-        jPanel16 = new javax.swing.JPanel();
+        input_capital_group = new javax.swing.ButtonGroup();
+        input_income_group = new javax.swing.ButtonGroup();
+        navigation_panel = new javax.swing.JPanel();
+        logo_label = new javax.swing.JLabel();
+        logo_separator = new javax.swing.JSeparator();
+        logo_icon = new javax.swing.JLabel();
+        button_capital = new javax.swing.JPanel();
+        capital_icon = new javax.swing.JLabel();
+        capital_label = new javax.swing.JLabel();
+        button_dashboard = new javax.swing.JPanel();
+        dashboard_icon = new javax.swing.JLabel();
+        dashboard_label = new javax.swing.JLabel();
+        button_income = new javax.swing.JPanel();
+        income_icon = new javax.swing.JLabel();
+        income_label = new javax.swing.JLabel();
+        button_administrator = new javax.swing.JPanel();
+        administrator_icon = new javax.swing.JLabel();
+        administrator_label = new javax.swing.JLabel();
+        button_expenses = new javax.swing.JPanel();
+        expenses_icon = new javax.swing.JLabel();
+        expenses_label = new javax.swing.JLabel();
+        content_panel = new javax.swing.JPanel();
+        dashboard_panel = new javax.swing.JPanel();
+        jPanel8 = new javax.swing.JPanel();
+        current_month_savings_stat = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel62 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        current_month_expense_stat = new javax.swing.JLabel();
+        jLabel64 = new javax.swing.JLabel();
+        jLabel45 = new javax.swing.JLabel();
         balance_btn = new javax.swing.JPanel();
         jLabel60 = new javax.swing.JLabel();
         current_month_balance_stat = new javax.swing.JLabel();
@@ -291,1496 +380,1784 @@ public class Home extends javax.swing.JFrame {
         jLabel40 = new javax.swing.JLabel();
         current_month_income_stat = new javax.swing.JLabel();
         jLabel63 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
-        current_month_expense_stat = new javax.swing.JLabel();
-        jLabel45 = new javax.swing.JLabel();
-        jLabel64 = new javax.swing.JLabel();
-        jPanel8 = new javax.swing.JPanel();
-        current_month_savings_stat = new javax.swing.JLabel();
-        jLabel39 = new javax.swing.JLabel();
-        jLabel62 = new javax.swing.JLabel();
-        savings_panel = new javax.swing.JPanel();
-        jPanel9 = new javax.swing.JPanel();
-        jLabel58 = new javax.swing.JLabel();
-        jLabel59 = new javax.swing.JLabel();
-        jPanel10 = new javax.swing.JPanel();
-        jLabel46 = new javax.swing.JLabel();
-        t_savings = new javax.swing.JRadioButton();
-        t_withdrawals = new javax.swing.JRadioButton();
-        jLabel47 = new javax.swing.JLabel();
-        jLabel48 = new javax.swing.JLabel();
-        transaction_amount = new javax.swing.JTextField();
-        transaction_date = new javax.swing.JTextField();
-        jPanel11 = new javax.swing.JPanel();
-        jLabel49 = new javax.swing.JLabel();
-        jSeparator8 = new javax.swing.JSeparator();
-        jLabel50 = new javax.swing.JLabel();
-        transaction_balance = new javax.swing.JLabel();
-        jSeparator9 = new javax.swing.JSeparator();
-        jSeparator10 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        transaction_summary = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        income_statistics_table_scroll = new javax.swing.JScrollPane();
+        income_statistics_table = new javax.swing.JTable();
+        expense_statistics_table_scroll = new javax.swing.JScrollPane();
+        expense_statistics_table = new javax.swing.JTable();
+        capital_statistics_table_scroll = new javax.swing.JScrollPane();
+        capital_statistics_table = new javax.swing.JTable();
+        detailed_capital_statistics_table_scroll = new javax.swing.JScrollPane();
+        detailed_capital_statistics_table = new javax.swing.JTable();
+        capital_panel = new javax.swing.JPanel();
+        capital_summary_table_scroll = new javax.swing.JScrollPane();
+        capital_summary_table = new javax.swing.JTable();
+        capital_method_label = new javax.swing.JLabel();
+        capital_type_label = new javax.swing.JLabel();
+        capital_date_label = new javax.swing.JLabel();
+        capital_transaction_id = new javax.swing.JLabel();
+        input_savings_capital = new javax.swing.JRadioButton();
+        input_withdrawals_capital = new javax.swing.JRadioButton();
+        input_capital_bank_name = new javax.swing.JTextField();
+        update_capital_date = new javax.swing.JTextField();
+        button_submit_capital = new javax.swing.JButton();
+        input_capital_addtional_information_scroll = new javax.swing.JScrollPane();
+        input_capital_addtional_information = new javax.swing.JTextArea();
+        capital_addtional_information_label2 = new javax.swing.JLabel();
+        input_capital_date = new org.jdesktop.swingx.JXDatePicker();
+        input_capital_amount = new javax.swing.JTextField();
+        button_update_capital = new javax.swing.JButton();
+        button_reset_capital_fields = new javax.swing.JButton();
+        capital_amount_label3 = new javax.swing.JLabel();
+        capital_transaction_label = new javax.swing.JLabel();
         income_panel = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jPanel17 = new javax.swing.JPanel();
-        jLabel41 = new javax.swing.JLabel();
-        jLabel42 = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel12 = new javax.swing.JLabel();
-        main_income = new javax.swing.JRadioButton();
-        other_income = new javax.swing.JRadioButton();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        income_amount = new javax.swing.JTextField();
-        income_date = new javax.swing.JTextField();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jLabel17 = new javax.swing.JLabel();
-        current_year_income = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        jLabel28 = new javax.swing.JLabel();
-        jLabel29 = new javax.swing.JLabel();
-        feb_month_income = new javax.swing.JLabel();
-        jun_month_income = new javax.swing.JLabel();
-        jan_month_income = new javax.swing.JLabel();
-        oct_month_income = new javax.swing.JLabel();
-        mar_month_income = new javax.swing.JLabel();
-        jul_month_income = new javax.swing.JLabel();
-        aug_month_income = new javax.swing.JLabel();
-        sep_month_income = new javax.swing.JLabel();
-        apr_month_income = new javax.swing.JLabel();
-        nov_month_income = new javax.swing.JLabel();
-        may_month_income = new javax.swing.JLabel();
-        dec_month_income = new javax.swing.JLabel();
-        jSeparator4 = new javax.swing.JSeparator();
-        jSeparator6 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        excenses_panel = new javax.swing.JPanel();
-        jPanel12 = new javax.swing.JPanel();
-        jLabel43 = new javax.swing.JLabel();
-        jLabel44 = new javax.swing.JLabel();
-        jPanel13 = new javax.swing.JPanel();
-        jLabel51 = new javax.swing.JLabel();
-        jLabel52 = new javax.swing.JLabel();
-        jLabel53 = new javax.swing.JLabel();
-        expense_amount = new javax.swing.JTextField();
-        expense_date = new javax.swing.JTextField();
-        jPanel14 = new javax.swing.JPanel();
-        jLabel54 = new javax.swing.JLabel();
-        jSeparator11 = new javax.swing.JSeparator();
-        jLabel55 = new javax.swing.JLabel();
-        current_month_balance = new javax.swing.JLabel();
-        jSeparator12 = new javax.swing.JSeparator();
-        jSeparator13 = new javax.swing.JSeparator();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel30 = new javax.swing.JLabel();
-        jLabel31 = new javax.swing.JLabel();
-        jLabel32 = new javax.swing.JLabel();
-        jLabel33 = new javax.swing.JLabel();
-        jLabel34 = new javax.swing.JLabel();
-        e_bills = new javax.swing.JLabel();
-        e_tax = new javax.swing.JLabel();
-        e_dry_food = new javax.swing.JLabel();
-        e_medication = new javax.swing.JLabel();
-        e_grocery = new javax.swing.JLabel();
-        e_transport = new javax.swing.JLabel();
-        e_emergency = new javax.swing.JLabel();
-        jLabel35 = new javax.swing.JLabel();
-        jLabel36 = new javax.swing.JLabel();
-        current_month_income = new javax.swing.JLabel();
-        current_month_expenses = new javax.swing.JLabel();
-        e_emergency1 = new javax.swing.JLabel();
-        jSeparator14 = new javax.swing.JSeparator();
-        jButton4 = new javax.swing.JButton();
-        expense_category = new javax.swing.JComboBox<>();
-        jLabel56 = new javax.swing.JLabel();
-        expense_item = new javax.swing.JTextField();
+        income_method_label = new javax.swing.JLabel();
+        income_type_label = new javax.swing.JLabel();
+        income_date_label = new javax.swing.JLabel();
+        income_amount_label = new javax.swing.JLabel();
+        input_main_income = new javax.swing.JRadioButton();
+        input_other_income = new javax.swing.JRadioButton();
+        update_income_date = new javax.swing.JTextField();
+        input_income_amount = new javax.swing.JTextField();
+        button_reset_income_fields = new javax.swing.JButton();
+        income_addtional_information_scroll = new javax.swing.JScrollPane();
+        input_income_addtional_information = new javax.swing.JTextArea();
+        income_addtional_information_label = new javax.swing.JLabel();
+        incomel_summary_table_scroll = new javax.swing.JScrollPane();
+        income_summary_table = new javax.swing.JTable();
+        input_income_date = new org.jdesktop.swingx.JXDatePicker();
+        input_income_type = new javax.swing.JTextField();
+        button_submit_income = new javax.swing.JButton();
+        button_update_income = new javax.swing.JButton();
+        income_transaction_id = new javax.swing.JLabel();
+        income_transaction_label = new javax.swing.JLabel();
+        expense_panel = new javax.swing.JPanel();
+        expense_type_label = new javax.swing.JLabel();
+        expense_item_name_label = new javax.swing.JLabel();
+        expense_date_label = new javax.swing.JLabel();
+        expense_amount_label = new javax.swing.JLabel();
+        input_expense_type = new javax.swing.JComboBox<>();
+        input_expense_item_name = new javax.swing.JTextField();
+        update_expense_date = new javax.swing.JTextField();
+        expense_addtional_information_scroll = new javax.swing.JScrollPane();
+        input_expense_addtional_information = new javax.swing.JTextArea();
+        expense_addtional_information_label = new javax.swing.JLabel();
+        expense_summary_table_scroll = new javax.swing.JScrollPane();
+        expense_summary_table = new javax.swing.JTable();
+        input_expense_date = new org.jdesktop.swingx.JXDatePicker();
+        expense_transaction_id = new javax.swing.JLabel();
+        expense_transaction_label = new javax.swing.JLabel();
+        button_reset_expense_fields = new javax.swing.JButton();
+        button_submit_expense = new javax.swing.JButton();
+        button_update_expense = new javax.swing.JButton();
+        input_expense_amount = new javax.swing.JTextField();
+        administrator_panel = new javax.swing.JPanel();
+        admin_icon = new javax.swing.JLabel();
+        input_administrator_password = new javax.swing.JPasswordField();
+        button_administrator_login = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        incorrect_password_label = new javax.swing.JLabel();
+        admin_dashboard_panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Budget Analyzer");
-        setBackground(new java.awt.Color(255, 255, 255));
-        setMaximumSize(new java.awt.Dimension(1185, 725));
-        setMinimumSize(new java.awt.Dimension(1185, 725));
-        setPreferredSize(new java.awt.Dimension(1185, 725));
+        setMaximumSize(new java.awt.Dimension(1005, 620));
+        setMinimumSize(new java.awt.Dimension(1005, 620));
         setResizable(false);
+        setSize(new java.awt.Dimension(1005, 620));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        sidepane.setBackground(new java.awt.Color(51, 51, 51));
-        sidepane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        navigation_panel.setBackground(new java.awt.Color(51, 51, 51));
+        navigation_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        btn_savings.setBackground(new java.awt.Color(11, 120, 209));
-        btn_savings.addMouseListener(new java.awt.event.MouseAdapter() {
+        logo_label.setFont(new java.awt.Font("Lato Semibold", 1, 28)); // NOI18N
+        logo_label.setForeground(new java.awt.Color(204, 204, 204));
+        logo_label.setText("BA");
+        navigation_panel.add(logo_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, -1, -1));
+        navigation_panel.add(logo_separator, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 64, 140, 10));
+
+        logo_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Ledger_48px_1.png"))); // NOI18N
+        navigation_panel.add(logo_icon, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 50, 40));
+
+        button_capital.setBackground(new java.awt.Color(11, 120, 209));
+        button_capital.setMaximumSize(new java.awt.Dimension(260, 50));
+        button_capital.setMinimumSize(new java.awt.Dimension(260, 50));
+        button_capital.setPreferredSize(new java.awt.Dimension(260, 50));
+        button_capital.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_savingsMouseClicked(evt);
+                button_capitalMouseClicked(evt);
             }
         });
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_Box_25px.png"))); // NOI18N
+        capital_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        capital_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_Box_25px_3.png"))); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel2.setText("SAVINGS");
+        capital_label.setBackground(new java.awt.Color(255, 255, 255));
+        capital_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        capital_label.setForeground(new java.awt.Color(204, 204, 204));
+        capital_label.setText("CAPITAL ");
 
-        javax.swing.GroupLayout btn_savingsLayout = new javax.swing.GroupLayout(btn_savings);
-        btn_savings.setLayout(btn_savingsLayout);
-        btn_savingsLayout.setHorizontalGroup(
-            btn_savingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_savingsLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout button_capitalLayout = new javax.swing.GroupLayout(button_capital);
+        button_capital.setLayout(button_capitalLayout);
+        button_capitalLayout.setHorizontalGroup(
+            button_capitalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_capitalLayout.createSequentialGroup()
+                .addComponent(capital_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addGap(0, 151, Short.MAX_VALUE))
+                .addComponent(capital_label)
+                .addGap(0, 141, Short.MAX_VALUE))
         );
-        btn_savingsLayout.setVerticalGroup(
-            btn_savingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(btn_savingsLayout.createSequentialGroup()
+        button_capitalLayout.setVerticalGroup(
+            button_capitalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(capital_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(button_capitalLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel2)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(capital_label)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        sidepane.add(btn_savings, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 180, 280, 60));
+        navigation_panel.add(button_capital, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 250, -1));
 
-        btn_home.setBackground(new java.awt.Color(12, 135, 235));
-        btn_home.addMouseListener(new java.awt.event.MouseAdapter() {
+        button_dashboard.setBackground(new java.awt.Color(12, 135, 235));
+        button_dashboard.setMaximumSize(new java.awt.Dimension(260, 50));
+        button_dashboard.setMinimumSize(new java.awt.Dimension(260, 50));
+        button_dashboard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_homeMouseClicked(evt);
+                button_dashboardMouseClicked(evt);
             }
         });
 
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Home_25px.png"))); // NOI18N
+        dashboard_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        dashboard_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Combo_Chart_25px.png"))); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel4.setText("HOME");
+        dashboard_label.setBackground(new java.awt.Color(255, 255, 255));
+        dashboard_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        dashboard_label.setForeground(new java.awt.Color(204, 204, 204));
+        dashboard_label.setText("DASHBOARD");
 
-        javax.swing.GroupLayout btn_homeLayout = new javax.swing.GroupLayout(btn_home);
-        btn_home.setLayout(btn_homeLayout);
-        btn_homeLayout.setHorizontalGroup(
-            btn_homeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_homeLayout.createSequentialGroup()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout button_dashboardLayout = new javax.swing.GroupLayout(button_dashboard);
+        button_dashboard.setLayout(button_dashboardLayout);
+        button_dashboardLayout.setHorizontalGroup(
+            button_dashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_dashboardLayout.createSequentialGroup()
+                .addComponent(dashboard_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addGap(0, 169, Short.MAX_VALUE))
+                .addComponent(dashboard_label)
+                .addGap(0, 116, Short.MAX_VALUE))
         );
-        btn_homeLayout.setVerticalGroup(
-            btn_homeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(btn_homeLayout.createSequentialGroup()
+        button_dashboardLayout.setVerticalGroup(
+            button_dashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(dashboard_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(button_dashboardLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel4)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(dashboard_label)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        sidepane.add(btn_home, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 280, 60));
+        navigation_panel.add(button_dashboard, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 250, -1));
 
-        btn_income.setBackground(new java.awt.Color(11, 120, 209));
-        btn_income.addMouseListener(new java.awt.event.MouseAdapter() {
+        button_income.setBackground(new java.awt.Color(11, 120, 209));
+        button_income.setMaximumSize(new java.awt.Dimension(260, 50));
+        button_income.setMinimumSize(new java.awt.Dimension(260, 50));
+        button_income.setPreferredSize(new java.awt.Dimension(260, 50));
+        button_income.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_incomeMouseClicked(evt);
+                button_incomeMouseClicked(evt);
             }
         });
 
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_25px.png"))); // NOI18N
+        income_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        income_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Receive_Cash_25px_1.png"))); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel6.setText("INCOME");
+        income_label.setBackground(new java.awt.Color(255, 255, 255));
+        income_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        income_label.setForeground(new java.awt.Color(204, 204, 204));
+        income_label.setText("INCOME");
 
-        javax.swing.GroupLayout btn_incomeLayout = new javax.swing.GroupLayout(btn_income);
-        btn_income.setLayout(btn_incomeLayout);
-        btn_incomeLayout.setHorizontalGroup(
-            btn_incomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_incomeLayout.createSequentialGroup()
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout button_incomeLayout = new javax.swing.GroupLayout(button_income);
+        button_income.setLayout(button_incomeLayout);
+        button_incomeLayout.setHorizontalGroup(
+            button_incomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_incomeLayout.createSequentialGroup()
+                .addComponent(income_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addGap(0, 156, Short.MAX_VALUE))
+                .addComponent(income_label)
+                .addGap(0, 145, Short.MAX_VALUE))
         );
-        btn_incomeLayout.setVerticalGroup(
-            btn_incomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(btn_incomeLayout.createSequentialGroup()
+        button_incomeLayout.setVerticalGroup(
+            button_incomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(income_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(button_incomeLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel6)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(income_label)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        sidepane.add(btn_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 280, -1));
+        navigation_panel.add(button_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 250, -1));
 
-        btn_expenses.setBackground(new java.awt.Color(11, 120, 209));
-        btn_expenses.addMouseListener(new java.awt.event.MouseAdapter() {
+        button_administrator.setBackground(new java.awt.Color(11, 120, 209));
+        button_administrator.setMaximumSize(new java.awt.Dimension(260, 50));
+        button_administrator.setMinimumSize(new java.awt.Dimension(260, 50));
+        button_administrator.setPreferredSize(new java.awt.Dimension(260, 50));
+        button_administrator.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btn_expensesMouseClicked(evt);
+                button_administratorMouseClicked(evt);
             }
         });
 
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Card_Payment_25px.png"))); // NOI18N
+        administrator_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        administrator_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Microsoft_Admin_25px.png"))); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel8.setText("EXPENSE");
+        administrator_label.setBackground(new java.awt.Color(255, 255, 255));
+        administrator_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        administrator_label.setForeground(new java.awt.Color(204, 204, 204));
+        administrator_label.setText("ADMINISTRATOR");
 
-        javax.swing.GroupLayout btn_expensesLayout = new javax.swing.GroupLayout(btn_expenses);
-        btn_expenses.setLayout(btn_expensesLayout);
-        btn_expensesLayout.setHorizontalGroup(
-            btn_expensesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_expensesLayout.createSequentialGroup()
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout button_administratorLayout = new javax.swing.GroupLayout(button_administrator);
+        button_administrator.setLayout(button_administratorLayout);
+        button_administratorLayout.setHorizontalGroup(
+            button_administratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_administratorLayout.createSequentialGroup()
+                .addComponent(administrator_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
-                .addGap(0, 153, Short.MAX_VALUE))
+                .addComponent(administrator_label)
+                .addGap(0, 92, Short.MAX_VALUE))
         );
-        btn_expensesLayout.setVerticalGroup(
-            btn_expensesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(btn_expensesLayout.createSequentialGroup()
+        button_administratorLayout.setVerticalGroup(
+            button_administratorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(administrator_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(button_administratorLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jLabel8)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(administrator_label)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        sidepane.add(btn_expenses, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 280, -1));
+        navigation_panel.add(button_administrator, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 320, 250, -1));
 
-        jLabel9.setFont(new java.awt.Font("Lato Semibold", 1, 28)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel9.setText("BA");
-        sidepane.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 20, -1, -1));
-        sidepane.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 64, 140, 10));
+        button_expenses.setBackground(new java.awt.Color(11, 120, 209));
+        button_expenses.setMaximumSize(new java.awt.Dimension(260, 50));
+        button_expenses.setMinimumSize(new java.awt.Dimension(260, 50));
+        button_expenses.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_expensesMouseClicked(evt);
+            }
+        });
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Ledger_48px_1.png"))); // NOI18N
-        sidepane.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 50, 40));
+        expenses_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        expenses_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Card_Payment_25px_1.png"))); // NOI18N
 
-        contentpane.setBackground(new java.awt.Color(255, 255, 255));
-        contentpane.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        expenses_label.setBackground(new java.awt.Color(255, 255, 255));
+        expenses_label.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        expenses_label.setForeground(new java.awt.Color(204, 204, 204));
+        expenses_label.setText("EXPENSE");
 
-        home_panel.setBackground(new java.awt.Color(255, 255, 255));
-        home_panel.setMaximumSize(new java.awt.Dimension(905, 714));
-        home_panel.setMinimumSize(new java.awt.Dimension(905, 714));
-        home_panel.setPreferredSize(new java.awt.Dimension(905, 714));
-        home_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        budget_summary_chart.setLayout(new javax.swing.BoxLayout(budget_summary_chart, javax.swing.BoxLayout.LINE_AXIS));
-        home_panel.add(budget_summary_chart, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 350));
-
-        jPanel16.setBackground(new java.awt.Color(255, 255, 255));
-
-        balance_btn.setBackground(new java.awt.Color(255, 255, 255));
-        balance_btn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 152, 0), 3));
-
-        jLabel60.setFont(new java.awt.Font("Lato", 0, 36)); // NOI18N
-        jLabel60.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel60.setText("BALANCE");
-
-        current_month_balance_stat.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_balance_stat.setForeground(new java.awt.Color(102, 102, 102));
-        current_month_balance_stat.setText("Rs. 0.00");
-
-        jLabel65.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Scales_96px.png"))); // NOI18N
-
-        javax.swing.GroupLayout balance_btnLayout = new javax.swing.GroupLayout(balance_btn);
-        balance_btn.setLayout(balance_btnLayout);
-        balance_btnLayout.setHorizontalGroup(
-            balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(balance_btnLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jLabel65)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
-                .addGroup(balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(current_month_balance_stat)
-                    .addComponent(jLabel60))
-                .addGap(35, 35, 35))
+        javax.swing.GroupLayout button_expensesLayout = new javax.swing.GroupLayout(button_expenses);
+        button_expenses.setLayout(button_expensesLayout);
+        button_expensesLayout.setHorizontalGroup(
+            button_expensesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_expensesLayout.createSequentialGroup()
+                .addComponent(expenses_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(expenses_label)
+                .addGap(0, 142, Short.MAX_VALUE))
         );
-        balance_btnLayout.setVerticalGroup(
-            balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(balance_btnLayout.createSequentialGroup()
-                .addGroup(balance_btnLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(balance_btnLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel60)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_balance_stat))
-                    .addGroup(balance_btnLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel65, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+        button_expensesLayout.setVerticalGroup(
+            button_expensesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(expenses_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(button_expensesLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(expenses_label)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 150, 136), 3));
+        navigation_panel.add(button_expenses, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 250, -1));
 
-        jLabel40.setFont(new java.awt.Font("Lato", 0, 36)); // NOI18N
-        jLabel40.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel40.setText("INCOME");
+        getContentPane().add(navigation_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 240, 620));
 
-        current_month_income_stat.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_income_stat.setForeground(new java.awt.Color(102, 102, 102));
-        current_month_income_stat.setText("Rs. 0.00");
+        content_panel.setBackground(new java.awt.Color(255, 255, 255));
+        content_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        content_panel.setMinimumSize(new java.awt.Dimension(760, 620));
+        content_panel.setPreferredSize(new java.awt.Dimension(760, 620));
+        content_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel63.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Refund_96px.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(jLabel63)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel40)
-                    .addComponent(current_month_income_stat))
-                .addGap(36, 36, 36))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel63, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jLabel40)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_income_stat)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(244, 67, 54), 3));
-
-        current_month_expense_stat.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_expense_stat.setForeground(new java.awt.Color(102, 102, 102));
-        current_month_expense_stat.setText("Rs. 0.00");
-
-        jLabel45.setFont(new java.awt.Font("Lato", 0, 36)); // NOI18N
-        jLabel45.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel45.setText("EXPENSES");
-
-        jLabel64.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Receipt_96px.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel64)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel45, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(current_month_expense_stat, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(31, 31, 31))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel64, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel45)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(current_month_expense_stat)))
-                .addContainerGap())
-        );
+        dashboard_panel.setBackground(new java.awt.Color(255, 255, 255));
+        dashboard_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        dashboard_panel.setMinimumSize(new java.awt.Dimension(760, 620));
 
         jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(33, 150, 243), 3));
         jPanel8.setForeground(new java.awt.Color(102, 102, 102));
+        jPanel8.setMaximumSize(new java.awt.Dimension(204, 76));
+        jPanel8.setMinimumSize(new java.awt.Dimension(204, 76));
+        jPanel8.setPreferredSize(new java.awt.Dimension(180, 76));
+        jPanel8.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        current_month_savings_stat.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
+        current_month_savings_stat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         current_month_savings_stat.setForeground(new java.awt.Color(102, 102, 102));
+        current_month_savings_stat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         current_month_savings_stat.setText("Rs. 0.00");
+        jPanel8.add(current_month_savings_stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 110, -1));
 
-        jLabel39.setFont(new java.awt.Font("Lato", 0, 36)); // NOI18N
+        jLabel39.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jLabel39.setForeground(new java.awt.Color(102, 102, 102));
         jLabel39.setText("SAVINGS");
+        jPanel8.add(jLabel39, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, -1, -1));
 
-        jLabel62.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Profit_96px_3.png"))); // NOI18N
+        jLabel62.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Get_Cash_48px_1.png"))); // NOI18N
+        jPanel8.add(jLabel62, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 60, 50));
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(jLabel62)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(current_month_savings_stat, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel39, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(36, 36, 36))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel39)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(current_month_savings_stat)
-                .addGap(22, 22, 22))
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel62, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(244, 67, 54), 3));
+        jPanel7.setMaximumSize(new java.awt.Dimension(204, 76));
+        jPanel7.setMinimumSize(new java.awt.Dimension(204, 76));
+        jPanel7.setPreferredSize(new java.awt.Dimension(180, 76));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(53, 53, 53)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(27, 27, 27)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(98, Short.MAX_VALUE))
-        );
+        current_month_expense_stat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        current_month_expense_stat.setForeground(new java.awt.Color(102, 102, 102));
+        current_month_expense_stat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        current_month_expense_stat.setText("Rs. 0.00");
+        jPanel7.add(current_month_expense_stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 110, -1));
 
-        home_panel.add(jPanel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 350, 940, 410));
+        jLabel64.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_POS_Terminal_48px.png"))); // NOI18N
+        jPanel7.add(jLabel64, new org.netbeans.lib.awtextra.AbsoluteConstraints(13, 14, -1, -1));
 
-        contentpane.add(home_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        jLabel45.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel45.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel45.setText("EXPENSES");
+        jPanel7.add(jLabel45, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, -1, -1));
 
-        savings_panel.setBackground(new java.awt.Color(255, 255, 255));
-        savings_panel.setMaximumSize(new java.awt.Dimension(905, 714));
-        savings_panel.setMinimumSize(new java.awt.Dimension(905, 714));
-        savings_panel.setPreferredSize(new java.awt.Dimension(905, 714));
-        savings_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        balance_btn.setBackground(new java.awt.Color(255, 255, 255));
+        balance_btn.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 152, 0), 3));
+        balance_btn.setPreferredSize(new java.awt.Dimension(180, 76));
+        balance_btn.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel9.setBackground(new java.awt.Color(102, 102, 102));
+        jLabel60.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel60.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel60.setText("BALANCE");
+        balance_btn.add(jLabel60, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, -1, -1));
 
-        jLabel58.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_Box_64px.png"))); // NOI18N
+        current_month_balance_stat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        current_month_balance_stat.setForeground(new java.awt.Color(102, 102, 102));
+        current_month_balance_stat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        current_month_balance_stat.setText("Rs. 0.00");
+        balance_btn.add(current_month_balance_stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 110, -1));
 
-        jLabel59.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
-        jLabel59.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel59.setText("SAVINGS");
+        jLabel65.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Scales_48px.png"))); // NOI18N
+        balance_btn.add(jLabel65, new org.netbeans.lib.awtextra.AbsoluteConstraints(13, 14, -1, -1));
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(350, 350, 350)
-                .addComponent(jLabel58)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel59)
-                .addContainerGap(407, Short.MAX_VALUE))
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel58))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(jLabel59)))
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 150, 136), 3));
+        jPanel6.setMaximumSize(new java.awt.Dimension(204, 76));
+        jPanel6.setMinimumSize(new java.awt.Dimension(204, 76));
+        jPanel6.setPreferredSize(new java.awt.Dimension(180, 76));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        savings_panel.add(jPanel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 120));
+        jLabel40.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel40.setForeground(new java.awt.Color(102, 102, 102));
+        jLabel40.setText("INCOME");
+        jPanel6.add(jLabel40, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, -1, -1));
 
-        jPanel10.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel10.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        current_month_income_stat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        current_month_income_stat.setForeground(new java.awt.Color(102, 102, 102));
+        current_month_income_stat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        current_month_income_stat.setText("Rs. 0.00");
+        jPanel6.add(current_month_income_stat, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 10, 110, -1));
 
-        jLabel46.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel46.setText("Transaction Method");
-        jPanel10.add(jLabel46, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 122, -1, -1));
+        jLabel63.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Refund_48px.png"))); // NOI18N
+        jPanel6.add(jLabel63, new org.netbeans.lib.awtextra.AbsoluteConstraints(13, 14, -1, 51));
 
-        t_savings.setBackground(new java.awt.Color(255, 255, 255));
-        transaction_category.add(t_savings);
-        t_savings.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        t_savings.setText("Savings");
-        t_savings.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_savingsActionPerformed(evt);
-            }
-        });
-        jPanel10.add(t_savings, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 120, -1, -1));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        t_withdrawals.setBackground(new java.awt.Color(255, 255, 255));
-        transaction_category.add(t_withdrawals);
-        t_withdrawals.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        t_withdrawals.setText("Withdrawals");
-        t_withdrawals.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                t_withdrawalsActionPerformed(evt);
-            }
-        });
-        jPanel10.add(t_withdrawals, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 120, -1, -1));
-
-        jLabel47.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel47.setText("Amount (Rs.)");
-        jPanel10.add(jLabel47, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 276, -1, 28));
-
-        jLabel48.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel48.setText("Transaction Date");
-        jPanel10.add(jLabel48, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 200, -1, -1));
-
-        transaction_amount.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel10.add(transaction_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 280, 263, -1));
-
-        transaction_date.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel10.add(transaction_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, 263, -1));
-
-        jPanel11.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel49.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel49.setText("TOTAL (Rs.)");
-        jPanel11.add(jLabel49, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 530, -1, 28));
-        jPanel11.add(jSeparator8, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 501, 321, 10));
-
-        jLabel50.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel50.setText("Monthly Transactions Summary");
-        jPanel11.add(jLabel50, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 10, -1, 28));
-
-        transaction_balance.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        transaction_balance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        transaction_balance.setText("0.00");
-        jPanel11.add(transaction_balance, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 530, 125, 28));
-        jPanel11.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 558, 110, 10));
-        jPanel11.add(jSeparator10, new org.netbeans.lib.awtextra.AbsoluteConstraints(185, 560, 110, 10));
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane1.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
-        transaction_summary.setBackground(new java.awt.Color(240, 240, 240));
-        transaction_summary.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        transaction_summary.setFont(new java.awt.Font("Lato", 0, 14)); // NOI18N
-        transaction_summary.setModel(new javax.swing.table.DefaultTableModel(
+        income_statistics_table.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_statistics_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        transaction_summary.setGridColor(new java.awt.Color(240, 240, 240));
-        transaction_summary.setIntercellSpacing(new java.awt.Dimension(5, 5));
-        transaction_summary.setRowHeight(28);
-        transaction_summary.setRowSelectionAllowed(false);
-        transaction_summary.setSelectionForeground(new java.awt.Color(240, 240, 240));
-        transaction_summary.setSurrendersFocusOnKeystroke(true);
-        jScrollPane1.setViewportView(transaction_summary);
-
-        jPanel11.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 300, 440));
-
-        jPanel10.add(jPanel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 0, -1, 640));
-
-        jButton3.setBackground(new java.awt.Color(33, 150, 243));
-        jButton3.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jButton3.setText("Submit");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        income_statistics_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        income_statistics_table.setEnabled(false);
+        income_statistics_table.setFillsViewportHeight(true);
+        income_statistics_table.setGridColor(new java.awt.Color(255, 255, 255));
+        income_statistics_table.setIntercellSpacing(new java.awt.Dimension(10, 10));
+        income_statistics_table.setRowHeight(32);
+        income_statistics_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        income_statistics_table.setShowHorizontalLines(false);
+        income_statistics_table.setShowVerticalLines(false);
+        income_statistics_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton3MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton3MouseEntered(evt);
+                income_statistics_tableMouseClicked(evt);
             }
         });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        income_statistics_table_scroll.setViewportView(income_statistics_table);
+
+        expense_statistics_table.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_statistics_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        expense_statistics_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        expense_statistics_table.setEnabled(false);
+        expense_statistics_table.setFillsViewportHeight(true);
+        expense_statistics_table.setGridColor(new java.awt.Color(255, 255, 255));
+        expense_statistics_table.setIntercellSpacing(new java.awt.Dimension(10, 10));
+        expense_statistics_table.setRowHeight(32);
+        expense_statistics_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        expense_statistics_table.setShowHorizontalLines(false);
+        expense_statistics_table.setShowVerticalLines(false);
+        expense_statistics_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                expense_statistics_tableMouseClicked(evt);
+            }
+        });
+        expense_statistics_table_scroll.setViewportView(expense_statistics_table);
+
+        capital_statistics_table.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_statistics_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        capital_statistics_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        capital_statistics_table.setEnabled(false);
+        capital_statistics_table.setFillsViewportHeight(true);
+        capital_statistics_table.setGridColor(new java.awt.Color(255, 255, 255));
+        capital_statistics_table.setIntercellSpacing(new java.awt.Dimension(10, 10));
+        capital_statistics_table.setRowHeight(32);
+        capital_statistics_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        capital_statistics_table.setShowHorizontalLines(false);
+        capital_statistics_table.setShowVerticalLines(false);
+        capital_statistics_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                capital_statistics_tableMouseClicked(evt);
+            }
+        });
+        capital_statistics_table_scroll.setViewportView(capital_statistics_table);
+
+        detailed_capital_statistics_table.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        detailed_capital_statistics_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        detailed_capital_statistics_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        detailed_capital_statistics_table.setEnabled(false);
+        detailed_capital_statistics_table.setFillsViewportHeight(true);
+        detailed_capital_statistics_table.setGridColor(new java.awt.Color(255, 255, 255));
+        detailed_capital_statistics_table.setIntercellSpacing(new java.awt.Dimension(10, 10));
+        detailed_capital_statistics_table.setRowHeight(32);
+        detailed_capital_statistics_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        detailed_capital_statistics_table.setShowHorizontalLines(false);
+        detailed_capital_statistics_table.setShowVerticalLines(false);
+        detailed_capital_statistics_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                detailed_capital_statistics_tableMouseClicked(evt);
+            }
+        });
+        detailed_capital_statistics_table_scroll.setViewportView(detailed_capital_statistics_table);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(detailed_capital_statistics_table_scroll)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(expense_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(income_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(capital_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(expense_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(income_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(capital_statistics_table_scroll, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(detailed_capital_statistics_table_scroll, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout dashboard_panelLayout = new javax.swing.GroupLayout(dashboard_panel);
+        dashboard_panel.setLayout(dashboard_panelLayout);
+        dashboard_panelLayout.setHorizontalGroup(
+            dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashboard_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 12, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dashboard_panelLayout.setVerticalGroup(
+            dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dashboard_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(balance_btn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        content_panel.add(dashboard_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        capital_panel.setBackground(new java.awt.Color(255, 255, 255));
+        capital_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        capital_panel.setMinimumSize(new java.awt.Dimension(760, 620));
+        capital_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        capital_summary_table.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        capital_summary_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        capital_summary_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        capital_summary_table.setFillsViewportHeight(true);
+        capital_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
+        capital_summary_table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        capital_summary_table.setRowHeight(25);
+        capital_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        capital_summary_table.setShowHorizontalLines(false);
+        capital_summary_table.setShowVerticalLines(false);
+        capital_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                capital_summary_tableMouseClicked(evt);
+            }
+        });
+        capital_summary_table_scroll.setViewportView(capital_summary_table);
+
+        capital_panel.add(capital_summary_table_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 11, 718, 303));
+
+        capital_method_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_method_label.setText("Capital Method");
+        capital_panel.add(capital_method_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 352, -1, -1));
+
+        capital_type_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_type_label.setText("Bank Name");
+        capital_panel.add(capital_type_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 398, -1, -1));
+
+        capital_date_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_date_label.setText("Capital Date");
+        capital_panel.add(capital_date_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 443, -1, -1));
+
+        capital_transaction_id.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_transaction_id.setText("00");
+        capital_transaction_id.setPreferredSize(new java.awt.Dimension(263, 27));
+        capital_panel.add(capital_transaction_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 540, -1, -1));
+
+        input_savings_capital.setBackground(new java.awt.Color(255, 255, 255));
+        input_capital_group.add(input_savings_capital);
+        input_savings_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_savings_capital.setText("Deposits");
+        input_savings_capital.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                input_savings_capitalActionPerformed(evt);
             }
         });
-        jPanel10.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 370, 112, 41));
+        capital_panel.add(input_savings_capital, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 348, -1, -1));
 
-        savings_panel.add(jPanel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 940, 640));
+        input_withdrawals_capital.setBackground(new java.awt.Color(255, 255, 255));
+        input_capital_group.add(input_withdrawals_capital);
+        input_withdrawals_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_withdrawals_capital.setText("Withdrawals");
+        input_withdrawals_capital.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_withdrawals_capitalActionPerformed(evt);
+            }
+        });
+        capital_panel.add(input_withdrawals_capital, new org.netbeans.lib.awtextra.AbsoluteConstraints(311, 348, 123, -1));
 
-        contentpane.add(savings_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        input_capital_bank_name.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_capital_bank_name.setMaximumSize(new java.awt.Dimension(263, 27));
+        input_capital_bank_name.setMinimumSize(new java.awt.Dimension(263, 27));
+        input_capital_bank_name.setPreferredSize(new java.awt.Dimension(263, 27));
+        capital_panel.add(input_capital_bank_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 395, -1, -1));
+
+        update_capital_date.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        update_capital_date.setMaximumSize(new java.awt.Dimension(263, 27));
+        update_capital_date.setMinimumSize(new java.awt.Dimension(263, 27));
+        update_capital_date.setPreferredSize(new java.awt.Dimension(263, 27));
+        capital_panel.add(update_capital_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 440, -1, -1));
+
+        button_submit_capital.setBackground(new java.awt.Color(33, 150, 243));
+        button_submit_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_capital.setText("Submit");
+        button_submit_capital.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_submit_capitalMouseClicked(evt);
+            }
+        });
+        button_submit_capital.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_submit_capitalActionPerformed(evt);
+            }
+        });
+        capital_panel.add(button_submit_capital, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 540, 112, 41));
+
+        input_capital_addtional_information.setColumns(20);
+        input_capital_addtional_information.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_capital_addtional_information.setLineWrap(true);
+        input_capital_addtional_information.setRows(4);
+        input_capital_addtional_information.setWrapStyleWord(true);
+        input_capital_addtional_information_scroll.setViewportView(input_capital_addtional_information);
+
+        capital_panel.add(input_capital_addtional_information_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(482, 395, 254, 118));
+
+        capital_addtional_information_label2.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_addtional_information_label2.setText("Addtional Information");
+        capital_panel.add(capital_addtional_information_label2, new org.netbeans.lib.awtextra.AbsoluteConstraints(535, 352, -1, -1));
+        capital_panel.add(input_capital_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 443, 263, 27));
+
+        input_capital_amount.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_capital_amount.setMaximumSize(new java.awt.Dimension(263, 27));
+        input_capital_amount.setMinimumSize(new java.awt.Dimension(263, 27));
+        input_capital_amount.setPreferredSize(new java.awt.Dimension(263, 27));
+        capital_panel.add(input_capital_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 489, -1, -1));
+
+        button_update_capital.setBackground(new java.awt.Color(33, 150, 243));
+        button_update_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_capital.setText("Update");
+        button_update_capital.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_update_capitalMouseClicked(evt);
+            }
+        });
+        button_update_capital.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_update_capitalActionPerformed(evt);
+            }
+        });
+        capital_panel.add(button_update_capital, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 540, 112, 41));
+
+        button_reset_capital_fields.setBackground(new java.awt.Color(33, 150, 243));
+        button_reset_capital_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_capital_fields.setText("Reset");
+        button_reset_capital_fields.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_reset_capital_fieldsMouseClicked(evt);
+            }
+        });
+        button_reset_capital_fields.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_reset_capital_fieldsActionPerformed(evt);
+            }
+        });
+        capital_panel.add(button_reset_capital_fields, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 540, 112, 41));
+
+        capital_amount_label3.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_amount_label3.setText("Amount (Rs.)");
+        capital_panel.add(capital_amount_label3, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 488, -1, 28));
+
+        capital_transaction_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        capital_transaction_label.setText("Capital ID");
+        capital_panel.add(capital_transaction_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 540, -1, 28));
+
+        content_panel.add(capital_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 620));
 
         income_panel.setBackground(new java.awt.Color(255, 255, 255));
-        income_panel.setMaximumSize(new java.awt.Dimension(905, 714));
-        income_panel.setMinimumSize(new java.awt.Dimension(905, 714));
-        income_panel.setOpaque(false);
-        income_panel.setPreferredSize(new java.awt.Dimension(905, 714));
-        income_panel.setRequestFocusEnabled(false);
+        income_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        income_panel.setMinimumSize(new java.awt.Dimension(760, 620));
         income_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel2.setBackground(new java.awt.Color(102, 102, 102));
+        income_method_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_method_label.setText("Income Method");
+        income_panel.add(income_method_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 352, -1, -1));
 
-        jPanel17.setBackground(new java.awt.Color(33, 150, 243));
-        jPanel17.setOpaque(false);
+        income_type_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_type_label.setText("Income Type");
+        income_panel.add(income_type_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 398, -1, -1));
 
-        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
-        jPanel17.setLayout(jPanel17Layout);
-        jPanel17Layout.setHorizontalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 305, Short.MAX_VALUE)
-        );
-        jPanel17Layout.setVerticalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 110, Short.MAX_VALUE)
-        );
+        income_date_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_date_label.setText("Income Date");
+        income_panel.add(income_date_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 443, -1, -1));
 
-        jLabel41.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Money_64px.png"))); // NOI18N
+        income_amount_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_amount_label.setText("Amount (Rs.)");
+        income_panel.add(income_amount_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 488, -1, 28));
 
-        jLabel42.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
-        jLabel42.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel42.setText("SAVINGS");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(346, Short.MAX_VALUE)
-                .addComponent(jLabel41)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel41)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        income_panel.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 120));
-
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setMinimumSize(new java.awt.Dimension(899, 714));
-        jPanel3.setPreferredSize(new java.awt.Dimension(899, 714));
-        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel12.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel12.setText("Income Method");
-        jPanel3.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 122, -1, -1));
-
-        main_income.setBackground(new java.awt.Color(255, 255, 255));
-        income_category.add(main_income);
-        main_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        main_income.setText("Main Income");
-        main_income.addActionListener(new java.awt.event.ActionListener() {
+        input_main_income.setBackground(new java.awt.Color(255, 255, 255));
+        input_income_group.add(input_main_income);
+        input_main_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_main_income.setText("Main Income");
+        input_main_income.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                main_incomeActionPerformed(evt);
+                input_main_incomeActionPerformed(evt);
             }
         });
-        jPanel3.add(main_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 118, -1, -1));
+        income_panel.add(input_main_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(167, 348, -1, -1));
 
-        other_income.setBackground(new java.awt.Color(255, 255, 255));
-        income_category.add(other_income);
-        other_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        other_income.setText("Other");
-        other_income.addActionListener(new java.awt.event.ActionListener() {
+        input_other_income.setBackground(new java.awt.Color(255, 255, 255));
+        input_income_group.add(input_other_income);
+        input_other_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_other_income.setText("Other");
+        input_other_income.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                other_incomeActionPerformed(evt);
+                input_other_incomeActionPerformed(evt);
             }
         });
-        jPanel3.add(other_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(436, 118, -1, -1));
+        income_panel.add(input_other_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(339, 348, 95, -1));
 
-        jLabel13.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel13.setText("Amount (Rs.)");
-        jPanel3.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 276, -1, 28));
+        update_income_date.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_panel.add(update_income_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 440, 263, -1));
 
-        jLabel14.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel14.setText("Income Date");
-        jPanel3.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 200, -1, -1));
+        input_income_amount.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_panel.add(input_income_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 489, 263, -1));
 
-        income_amount.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel3.add(income_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 276, 263, -1));
-
-        income_date.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jPanel3.add(income_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(246, 197, 263, -1));
-
-        jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel15.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel15.setText("TOTAL (Rs.)");
-        jPanel4.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 540, -1, 28));
-        jPanel4.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 521, 321, 10));
-
-        jLabel17.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel17.setText("Monthly Income Summary");
-        jPanel4.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(52, 11, -1, 28));
-
-        current_year_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_year_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        current_year_income.setText("0.00");
-        jPanel4.add(current_year_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 540, 125, 28));
-
-        jLabel18.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel18.setText("January");
-        jPanel4.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 58, -1, 28));
-
-        jLabel19.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel19.setText("Feburary");
-        jPanel4.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 98, -1, 28));
-
-        jLabel20.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel20.setText("March");
-        jPanel4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 133, -1, 28));
-
-        jLabel21.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel21.setText("May");
-        jPanel4.add(jLabel21, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 213, -1, 28));
-
-        jLabel22.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel22.setText("April");
-        jPanel4.add(jLabel22, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 173, -1, 28));
-
-        jLabel23.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel23.setText("July");
-        jPanel4.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 293, -1, 28));
-
-        jLabel24.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel24.setText("June");
-        jPanel4.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 253, -1, 28));
-
-        jLabel25.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel25.setText("October");
-        jPanel4.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 410, -1, 28));
-
-        jLabel26.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel26.setText("August");
-        jPanel4.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 332, -1, 28));
-
-        jLabel27.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel27.setText("December");
-        jPanel4.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 488, -1, 28));
-
-        jLabel28.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel28.setText("November");
-        jPanel4.add(jLabel28, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 449, -1, 28));
-
-        jLabel29.setFont(new java.awt.Font("Lato", 0, 15)); // NOI18N
-        jLabel29.setText("September");
-        jPanel4.add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 371, -1, 28));
-
-        feb_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        feb_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        feb_month_income.setText("0.00");
-        feb_month_income.setToolTipText("");
-        jPanel4.add(feb_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 97, 125, 28));
-
-        jun_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jun_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jun_month_income.setText("0.00");
-        jun_month_income.setToolTipText("");
-        jPanel4.add(jun_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 252, 125, 28));
-
-        jan_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jan_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jan_month_income.setText("0.00");
-        jan_month_income.setToolTipText("");
-        jPanel4.add(jan_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 57, 125, 28));
-
-        oct_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        oct_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        oct_month_income.setText("0.00");
-        oct_month_income.setToolTipText("");
-        jPanel4.add(oct_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 410, 125, 28));
-
-        mar_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        mar_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        mar_month_income.setText("0.00");
-        mar_month_income.setToolTipText("");
-        jPanel4.add(mar_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 132, 125, 28));
-
-        jul_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jul_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jul_month_income.setText("0.00");
-        jul_month_income.setToolTipText("");
-        jPanel4.add(jul_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 292, 125, 28));
-
-        aug_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        aug_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        aug_month_income.setText("0.00");
-        aug_month_income.setToolTipText("");
-        jPanel4.add(aug_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 332, 125, 28));
-
-        sep_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        sep_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        sep_month_income.setText("0.00");
-        sep_month_income.setToolTipText("");
-        jPanel4.add(sep_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 371, 125, 28));
-
-        apr_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        apr_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        apr_month_income.setText("0.00");
-        apr_month_income.setToolTipText("");
-        jPanel4.add(apr_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 172, 125, 28));
-
-        nov_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        nov_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        nov_month_income.setText("0.00");
-        nov_month_income.setToolTipText("");
-        jPanel4.add(nov_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 449, 125, 28));
-
-        may_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        may_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        may_month_income.setText("0.00");
-        may_month_income.setToolTipText("");
-        jPanel4.add(may_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 212, 125, 28));
-
-        dec_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        dec_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        dec_month_income.setText("0.00");
-        dec_month_income.setToolTipText("");
-        jPanel4.add(dec_month_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(161, 488, 125, 28));
-        jPanel4.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 568, 100, 10));
-        jPanel4.add(jSeparator6, new org.netbeans.lib.awtextra.AbsoluteConstraints(188, 570, 100, 10));
-
-        jPanel3.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 0, 310, 630));
-
-        jButton1.setBackground(new java.awt.Color(33, 150, 243));
-        jButton1.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jButton1.setText("Submit");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+        button_reset_income_fields.setBackground(new java.awt.Color(33, 150, 243));
+        button_reset_income_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_income_fields.setText("Reset");
+        button_reset_income_fields.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+                button_reset_income_fieldsMouseClicked(evt);
             }
         });
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        button_reset_income_fields.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                button_reset_income_fieldsActionPerformed(evt);
             }
         });
-        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(397, 361, 112, 41));
+        income_panel.add(button_reset_income_fields, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 540, 112, 41));
 
-        income_panel.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 900, 640));
+        input_income_addtional_information.setColumns(20);
+        input_income_addtional_information.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_income_addtional_information.setLineWrap(true);
+        input_income_addtional_information.setRows(4);
+        input_income_addtional_information.setWrapStyleWord(true);
+        income_addtional_information_scroll.setViewportView(input_income_addtional_information);
 
-        contentpane.add(income_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        income_panel.add(income_addtional_information_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(482, 395, 254, 120));
 
-        excenses_panel.setBackground(new java.awt.Color(255, 255, 255));
-        excenses_panel.setMaximumSize(new java.awt.Dimension(905, 714));
-        excenses_panel.setMinimumSize(new java.awt.Dimension(905, 714));
-        excenses_panel.setPreferredSize(new java.awt.Dimension(905, 714));
-        excenses_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        income_addtional_information_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_addtional_information_label.setText("Addtional Information");
+        income_panel.add(income_addtional_information_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(535, 352, -1, -1));
 
-        jPanel12.setBackground(new java.awt.Color(102, 102, 102));
+        income_summary_table.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        income_summary_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        income_summary_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        income_summary_table.setFillsViewportHeight(true);
+        income_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
+        income_summary_table.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        income_summary_table.setRowHeight(25);
+        income_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        income_summary_table.setShowHorizontalLines(false);
+        income_summary_table.setShowVerticalLines(false);
+        income_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                income_summary_tableMouseClicked(evt);
+            }
+        });
+        incomel_summary_table_scroll.setViewportView(income_summary_table);
 
-        jLabel43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Card_Payment_50px.png"))); // NOI18N
+        income_panel.add(incomel_summary_table_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 11, 718, 303));
 
-        jLabel44.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
-        jLabel44.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel44.setText("EXPENSES");
+        input_income_date.setPreferredSize(new java.awt.Dimension(6, 27));
+        income_panel.add(input_income_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 443, 263, -1));
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(355, 355, 355)
-                .addComponent(jLabel43)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(392, Short.MAX_VALUE))
+        input_income_type.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_panel.add(input_income_type, new org.netbeans.lib.awtextra.AbsoluteConstraints(171, 395, 263, -1));
+
+        button_submit_income.setBackground(new java.awt.Color(33, 150, 243));
+        button_submit_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_income.setText("Submit");
+        button_submit_income.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_submit_incomeMouseClicked(evt);
+            }
+        });
+        button_submit_income.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_submit_incomeActionPerformed(evt);
+            }
+        });
+        income_panel.add(button_submit_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 540, 112, 41));
+
+        button_update_income.setBackground(new java.awt.Color(33, 150, 243));
+        button_update_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_income.setText("Update");
+        button_update_income.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_update_incomeMouseClicked(evt);
+            }
+        });
+        button_update_income.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_update_incomeActionPerformed(evt);
+            }
+        });
+        income_panel.add(button_update_income, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 540, 112, 41));
+
+        income_transaction_id.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_transaction_id.setText("00");
+        income_transaction_id.setPreferredSize(new java.awt.Dimension(263, 27));
+        income_panel.add(income_transaction_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 540, -1, -1));
+
+        income_transaction_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        income_transaction_label.setText("Income ID");
+        income_panel.add(income_transaction_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 540, -1, 28));
+
+        content_panel.add(income_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, 620));
+
+        expense_panel.setBackground(new java.awt.Color(255, 255, 255));
+        expense_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        expense_panel.setMinimumSize(new java.awt.Dimension(760, 620));
+        expense_panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        expense_type_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_type_label.setText("Expense Type");
+        expense_panel.add(expense_type_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 355, -1, -1));
+
+        expense_item_name_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_item_name_label.setText("Item Name");
+        expense_panel.add(expense_item_name_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 398, -1, -1));
+
+        expense_date_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_date_label.setText("Transaction Date");
+        expense_panel.add(expense_date_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 443, -1, -1));
+
+        expense_amount_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_amount_label.setText("Amount (Rs.)");
+        expense_panel.add(expense_amount_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 488, -1, 28));
+
+        input_expense_type.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_expense_type.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bills", "Tax", "Grocery", "Dry Food", "Medication", "Transport", "Emergency" }));
+        input_expense_type.setMaximumSize(new java.awt.Dimension(6, 27));
+        input_expense_type.setMinimumSize(new java.awt.Dimension(6, 27));
+        input_expense_type.setPreferredSize(new java.awt.Dimension(6, 27));
+        input_expense_type.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_expense_typeActionPerformed(evt);
+            }
+        });
+        expense_panel.add(input_expense_type, new org.netbeans.lib.awtextra.AbsoluteConstraints(159, 352, 263, -1));
+
+        input_expense_item_name.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_expense_item_name.setMaximumSize(new java.awt.Dimension(6, 27));
+        expense_panel.add(input_expense_item_name, new org.netbeans.lib.awtextra.AbsoluteConstraints(159, 397, 263, -1));
+
+        update_expense_date.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        update_expense_date.setMaximumSize(new java.awt.Dimension(6, 27));
+        update_expense_date.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                update_expense_dateMouseClicked(evt);
+            }
+        });
+        expense_panel.add(update_expense_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 440, 263, -1));
+
+        input_expense_addtional_information.setColumns(20);
+        input_expense_addtional_information.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_expense_addtional_information.setLineWrap(true);
+        input_expense_addtional_information.setRows(4);
+        input_expense_addtional_information.setWrapStyleWord(true);
+        expense_addtional_information_scroll.setViewportView(input_expense_addtional_information);
+
+        expense_panel.add(expense_addtional_information_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(483, 393, 254, 123));
+
+        expense_addtional_information_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_addtional_information_label.setText("Addtional Information");
+        expense_panel.add(expense_addtional_information_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(535, 354, -1, -1));
+
+        expense_summary_table.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        expense_summary_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        expense_summary_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        expense_summary_table.setFillsViewportHeight(true);
+        expense_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
+        expense_summary_table.setRowHeight(25);
+        expense_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
+        expense_summary_table.setShowHorizontalLines(false);
+        expense_summary_table.setShowVerticalLines(false);
+        expense_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                expense_summary_tableMouseClicked(evt);
+            }
+        });
+        expense_summary_table_scroll.setViewportView(expense_summary_table);
+
+        expense_panel.add(expense_summary_table_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 11, 718, 303));
+
+        input_expense_date.setPreferredSize(new java.awt.Dimension(6, 27));
+        expense_panel.add(input_expense_date, new org.netbeans.lib.awtextra.AbsoluteConstraints(159, 443, 263, -1));
+
+        expense_transaction_id.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_transaction_id.setText("00");
+        expense_transaction_id.setPreferredSize(new java.awt.Dimension(263, 27));
+        expense_panel.add(expense_transaction_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 540, -1, -1));
+
+        expense_transaction_label.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        expense_transaction_label.setText("Expense ID");
+        expense_panel.add(expense_transaction_label, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 540, -1, 28));
+
+        button_reset_expense_fields.setBackground(new java.awt.Color(33, 150, 243));
+        button_reset_expense_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_expense_fields.setText("Reset");
+        button_reset_expense_fields.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_reset_expense_fieldsMouseClicked(evt);
+            }
+        });
+        button_reset_expense_fields.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_reset_expense_fieldsActionPerformed(evt);
+            }
+        });
+        expense_panel.add(button_reset_expense_fields, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 540, 112, 41));
+
+        button_submit_expense.setBackground(new java.awt.Color(33, 150, 243));
+        button_submit_expense.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_expense.setText("Submit");
+        button_submit_expense.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_submit_expenseMouseClicked(evt);
+            }
+        });
+        button_submit_expense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_submit_expenseActionPerformed(evt);
+            }
+        });
+        expense_panel.add(button_submit_expense, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 540, 112, 41));
+
+        button_update_expense.setBackground(new java.awt.Color(33, 150, 243));
+        button_update_expense.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_expense.setText("Update");
+        button_update_expense.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_update_expenseMouseClicked(evt);
+            }
+        });
+        button_update_expense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_update_expenseActionPerformed(evt);
+            }
+        });
+        expense_panel.add(button_update_expense, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 540, 112, 41));
+
+        input_expense_amount.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_expense_amount.setMaximumSize(new java.awt.Dimension(6, 27));
+        expense_panel.add(input_expense_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(159, 487, 263, -1));
+
+        content_panel.add(expense_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        administrator_panel.setBackground(new java.awt.Color(255, 255, 255));
+        administrator_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        administrator_panel.setMinimumSize(new java.awt.Dimension(760, 620));
+
+        admin_icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_SQL_Database_Administrators_Group_Skin_Type_7_96px_1.png"))); // NOI18N
+
+        input_administrator_password.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        input_administrator_password.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                input_administrator_passwordActionPerformed(evt);
+            }
+        });
+
+        button_administrator_login.setBackground(new java.awt.Color(102, 102, 102));
+        button_administrator_login.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                button_administrator_loginMouseClicked(evt);
+            }
+        });
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Interfaces/Images/icons8_Encrypt_25px.png"))); // NOI18N
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("LOGIN");
+
+        javax.swing.GroupLayout button_administrator_loginLayout = new javax.swing.GroupLayout(button_administrator_login);
+        button_administrator_login.setLayout(button_administrator_loginLayout);
+        button_administrator_loginLayout.setHorizontalGroup(
+            button_administrator_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(button_administrator_loginLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel43)
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel44, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(35, Short.MAX_VALUE))
+        button_administrator_loginLayout.setVerticalGroup(
+            button_administrator_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, button_administrator_loginLayout.createSequentialGroup()
+                .addGap(0, 8, Short.MAX_VALUE)
+                .addGroup(button_administrator_loginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
+                .addGap(4, 4, 4))
         );
 
-        excenses_panel.add(jPanel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 940, 120));
+        incorrect_password_label.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        incorrect_password_label.setForeground(new java.awt.Color(153, 0, 51));
+        incorrect_password_label.setText("Incorrent Credentials");
 
-        jPanel13.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel51.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel51.setText("Expense Type");
-
-        jLabel52.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel52.setText("Amount (Rs.)");
-
-        jLabel53.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel53.setText("Transaction Date");
-
-        expense_amount.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-
-        expense_date.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-
-        jLabel54.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel54.setText("Balance (Rs.)");
-
-        jLabel55.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel55.setText("Monthly Expense Summary");
-
-        current_month_balance.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_balance.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        current_month_balance.setText("0.00");
-
-        jLabel11.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel11.setText("Bills");
-
-        jLabel16.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel16.setText("Tax");
-
-        jLabel30.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel30.setText("Grocery");
-
-        jLabel31.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel31.setText("Dry Food");
-
-        jLabel32.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel32.setText("Medication");
-
-        jLabel33.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel33.setText("Transport");
-
-        jLabel34.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel34.setText("Emergency");
-
-        e_bills.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_bills.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_bills.setText("0.00");
-
-        e_tax.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_tax.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_tax.setText("0.00");
-
-        e_dry_food.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_dry_food.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_dry_food.setText("0.00");
-
-        e_medication.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_medication.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_medication.setText("0.00");
-
-        e_grocery.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_grocery.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_grocery.setText("0.00");
-
-        e_transport.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_transport.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_transport.setText("0.00");
-
-        e_emergency.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        e_emergency.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_emergency.setText("0.00");
-
-        jLabel35.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel35.setText("Expenses");
-
-        jLabel36.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel36.setText("Income");
-
-        current_month_income.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_income.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        current_month_income.setText("0.00");
-
-        current_month_expenses.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        current_month_expenses.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        current_month_expenses.setText("0.00");
-
-        e_emergency1.setFont(new java.awt.Font("Lato", 0, 24)); // NOI18N
-        e_emergency1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        e_emergency1.setText("-");
-
-        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
-        jPanel14.setLayout(jPanel14Layout);
-        jPanel14Layout.setHorizontalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel34)
-                    .addComponent(jLabel33)
-                    .addComponent(jLabel32)
-                    .addComponent(jLabel31)
-                    .addComponent(jLabel30)
-                    .addComponent(jLabel16))
+        javax.swing.GroupLayout administrator_panelLayout = new javax.swing.GroupLayout(administrator_panel);
+        administrator_panel.setLayout(administrator_panelLayout);
+        administrator_panelLayout.setHorizontalGroup(
+            administrator_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(administrator_panelLayout.createSequentialGroup()
+                .addGroup(administrator_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(administrator_panelLayout.createSequentialGroup()
+                        .addGap(297, 297, 297)
+                        .addComponent(admin_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(administrator_panelLayout.createSequentialGroup()
+                        .addGap(306, 306, 306)
+                        .addComponent(button_administrator_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(administrator_panelLayout.createSequentialGroup()
+                        .addGap(235, 235, 235)
+                        .addComponent(input_administrator_password, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(administrator_panelLayout.createSequentialGroup()
+                        .addGap(280, 280, 280)
+                        .addComponent(incorrect_password_label)))
+                .addContainerGap(284, Short.MAX_VALUE))
+        );
+        administrator_panelLayout.setVerticalGroup(
+            administrator_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(administrator_panelLayout.createSequentialGroup()
+                .addGap(147, 147, 147)
+                .addComponent(admin_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(e_bills, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_tax, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_dry_food, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_medication, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_grocery, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_transport, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_emergency, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jSeparator11, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(195, 195, 195)
-                        .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(jLabel55))
-                    .addGroup(jPanel14Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel14Layout.createSequentialGroup()
-                                        .addComponent(jLabel36)
-                                        .addGap(97, 97, 97))
-                                    .addGroup(jPanel14Layout.createSequentialGroup()
-                                        .addComponent(jLabel35)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(e_emergency1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(current_month_expenses, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(current_month_income, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel14Layout.createSequentialGroup()
-                                .addComponent(jLabel54)
-                                .addGap(52, 52, 52)
-                                .addComponent(current_month_balance, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel14Layout.setVerticalGroup(
-            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel14Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(e_bills))
-                .addGap(29, 29, 29)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(e_tax))
-                .addGap(26, 26, 26)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel30)
-                    .addComponent(e_grocery))
-                .addGap(30, 30, 30)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31)
-                    .addComponent(e_dry_food))
-                .addGap(36, 36, 36)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32)
-                    .addComponent(e_medication))
-                .addGap(33, 33, 33)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel33)
-                    .addComponent(e_transport))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel34)
-                    .addComponent(e_emergency))
+                .addComponent(input_administrator_password, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jSeparator11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel36)
-                    .addComponent(current_month_income, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel35)
-                    .addComponent(current_month_expenses, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(e_emergency1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(current_month_balance, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jSeparator13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addComponent(button_administrator_login, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(incorrect_password_label)
+                .addContainerGap(200, Short.MAX_VALUE))
         );
 
-        jButton4.setBackground(new java.awt.Color(33, 150, 243));
-        jButton4.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jButton4.setText("Submit");
-        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton4MouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton4MouseEntered(evt);
-            }
-        });
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        content_panel.add(administrator_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        expense_category.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        expense_category.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bills", "Tax", "Grocery", "Dry Food", "Medication", "Transport", "Emergency" }));
-        expense_category.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expense_categoryActionPerformed(evt);
-            }
-        });
+        admin_dashboard_panel.setBackground(new java.awt.Color(255, 255, 255));
+        admin_dashboard_panel.setMaximumSize(new java.awt.Dimension(760, 620));
+        admin_dashboard_panel.setMinimumSize(new java.awt.Dimension(760, 620));
 
-        jLabel56.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-        jLabel56.setText("Item Name");
-
-        expense_item.setFont(new java.awt.Font("Lato", 0, 18)); // NOI18N
-
-        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
-        jPanel13.setLayout(jPanel13Layout);
-        jPanel13Layout.setHorizontalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addGap(75, 75, 75)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel51)
-                    .addComponent(jLabel53)
-                    .addComponent(jLabel52)
-                    .addComponent(jLabel56))
-                .addGap(48, 48, 48)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addGap(160, 160, 160)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(expense_amount, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(expense_date, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(expense_item, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(expense_category, javax.swing.GroupLayout.Alignment.LEADING, 0, 260, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
-                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+        javax.swing.GroupLayout admin_dashboard_panelLayout = new javax.swing.GroupLayout(admin_dashboard_panel);
+        admin_dashboard_panel.setLayout(admin_dashboard_panelLayout);
+        admin_dashboard_panelLayout.setHorizontalGroup(
+            admin_dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 760, Short.MAX_VALUE)
         );
-        jPanel13Layout.setVerticalGroup(
-            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel13Layout.createSequentialGroup()
-                .addGap(119, 119, 119)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel51)
-                    .addComponent(expense_category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel56)
-                    .addComponent(expense_item, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
-                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(jLabel53)
-                        .addGap(54, 54, 54)
-                        .addComponent(jLabel52, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(expense_date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(52, 52, 52)
-                        .addComponent(expense_amount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        admin_dashboard_panelLayout.setVerticalGroup(
+            admin_dashboard_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 620, Short.MAX_VALUE)
         );
 
-        excenses_panel.add(jPanel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 940, 640));
+        content_panel.add(admin_dashboard_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
-        contentpane.add(excenses_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(sidepane, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(contentpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sidepane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(contentpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        getContentPane().add(content_panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(245, 0, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_homeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_homeMouseClicked
-        setColor(btn_home);
-        resetColor(btn_savings);
-        resetColor(btn_income);
-        resetColor(btn_expenses);
-
-        home_panel.setVisible(true);
-        income_panel.setVisible(false);
-        savings_panel.setVisible(false);
-        excenses_panel.setVisible(false);
+    private void button_capitalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_capitalMouseClicked
 
         try {
-            yearlyStatistics();
-            monthlyStatistics();
+
+            resetColor(button_dashboard);
+            setColor(button_capital);
+            resetColor(button_income);
+            resetColor(button_expenses);
+            resetColor(button_administrator);
+
+            dashboard_panel.setVisible(false);
+            capital_panel.setVisible(true);
+            income_panel.setVisible(false);
+            expense_panel.setVisible(false);
+            administrator_panel.setVisible(false);
+            admin_dashboard_panel.setVisible(false);
+
+            refreshCapitalPanel();
+            setCapitalSubmitInterface();
+
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
+            displayErrorMessage(e);
         }
-    }//GEN-LAST:event_btn_homeMouseClicked
+    }//GEN-LAST:event_button_capitalMouseClicked
 
-    private void btn_savingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_savingsMouseClicked
-        setColor(btn_savings);
-        resetColor(btn_home);
-        resetColor(btn_income);
-        resetColor(btn_expenses);
-
-        home_panel.setVisible(false);
-        savings_panel.setVisible(true);
-        income_panel.setVisible(false);
-        excenses_panel.setVisible(false);
+    private void button_dashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_dashboardMouseClicked
 
         try {
-            monthlyTransactions();
+
+            getStatistics();
+
+            setColor(button_dashboard);
+            resetColor(button_capital);
+            resetColor(button_income);
+            resetColor(button_expenses);
+            resetColor(button_administrator);
+
+            dashboard_panel.setVisible(true);
+            capital_panel.setVisible(false);
+            income_panel.setVisible(false);
+            expense_panel.setVisible(false);
+            administrator_panel.setVisible(false);
+            admin_dashboard_panel.setVisible(false);
+
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
+            displayErrorMessage(e);
         }
+    }//GEN-LAST:event_button_dashboardMouseClicked
 
-        transaction_date.setText(currentDate);
-    }//GEN-LAST:event_btn_savingsMouseClicked
-
-    private void btn_incomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_incomeMouseClicked
-        setColor(btn_income);
-        resetColor(btn_home);
-        resetColor(btn_savings);
-        resetColor(btn_expenses);
-
-        home_panel.setVisible(false);
-        savings_panel.setVisible(false);
-        income_panel.setVisible(true);
-        excenses_panel.setVisible(false);
+    private void button_incomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_incomeMouseClicked
 
         try {
-            monthlyIncome();
+            resetColor(button_capital);
+            resetColor(button_dashboard);
+            setColor(button_income);
+            resetColor(button_expenses);
+            resetColor(button_administrator);
+
+            dashboard_panel.setVisible(false);
+            capital_panel.setVisible(false);
+            income_panel.setVisible(true);
+            expense_panel.setVisible(false);
+            administrator_panel.setVisible(false);
+            admin_dashboard_panel.setVisible(false);
+
+            refreshIncomePanel();
+            setIncomeSubmitInterface();
+
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
+            displayErrorMessage(e);
         }
+    }//GEN-LAST:event_button_incomeMouseClicked
 
-        income_date.setText(currentDate);
-    }//GEN-LAST:event_btn_incomeMouseClicked
-
-    private void btn_expensesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_expensesMouseClicked
-        setColor(btn_expenses);
-        resetColor(btn_home);
-        resetColor(btn_savings);
-        resetColor(btn_income);
-
-        home_panel.setVisible(false);
-        income_panel.setVisible(false);
-        savings_panel.setVisible(false);
-        excenses_panel.setVisible(true);
+    private void button_administratorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_administratorMouseClicked
 
         try {
-            monthlyExpenses();
+
+            resetColor(button_capital);
+            resetColor(button_dashboard);
+            resetColor(button_income);
+            resetColor(button_expenses);
+            setColor(button_administrator);
+
+            dashboard_panel.setVisible(false);
+            capital_panel.setVisible(false);
+            income_panel.setVisible(false);
+            expense_panel.setVisible(false);
+            administrator_panel.setVisible(true);
+            admin_dashboard_panel.setVisible(false);
+
+            incorrect_password_label.setVisible(false);
+            
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
+            displayErrorMessage(e);
         }
+    }//GEN-LAST:event_button_administratorMouseClicked
 
-        expense_date.setText(currentDate);
-    }//GEN-LAST:event_btn_expensesMouseClicked
-
-    private void other_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_other_incomeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_other_incomeActionPerformed
-
-    private void main_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_main_incomeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_main_incomeActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void t_savingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_savingsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_savingsActionPerformed
-
-    private void t_withdrawalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_t_withdrawalsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_t_withdrawalsActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-        t_savings.setActionCommand("Deposit");
-        t_withdrawals.setActionCommand("Withdrawal");
-
-        String t_category = transaction_category.getSelection().getActionCommand();
-        String t_date = transaction_date.getText();
-        String t_amount = transaction_amount.getText();
-
-        Transaction transaction = new Transaction();
+    private void button_expensesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_expensesMouseClicked
 
         try {
-            int result = transaction.setTransaction(t_category, t_date, t_amount);
+
+            resetColor(button_capital);
+            resetColor(button_dashboard);
+            resetColor(button_income);
+            setColor(button_expenses);
+            resetColor(button_administrator);
+
+            dashboard_panel.setVisible(false);
+            capital_panel.setVisible(false);
+            income_panel.setVisible(false);
+            expense_panel.setVisible(true);
+            administrator_panel.setVisible(false);
+            admin_dashboard_panel.setVisible(false);
+
+            refreshExpensePanel();
+            setExpenseSubmitInterface();
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_expensesMouseClicked
+
+    private void input_main_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_main_incomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_main_incomeActionPerformed
+
+    private void input_other_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_other_incomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_other_incomeActionPerformed
+
+    private void button_reset_income_fieldsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_reset_income_fieldsMouseClicked
+
+        try {
+
+            resetIncomeValues();
+            setIncomeSubmitInterface();
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_reset_income_fieldsMouseClicked
+
+    private void button_reset_income_fieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reset_income_fieldsActionPerformed
+
+    }//GEN-LAST:event_button_reset_income_fieldsActionPerformed
+
+    private void input_savings_capitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_savings_capitalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_savings_capitalActionPerformed
+
+    private void input_withdrawals_capitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_withdrawals_capitalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_withdrawals_capitalActionPerformed
+
+    private void button_submit_capitalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_submit_capitalMouseClicked
+
+        try {
+
+            Capital cap = new Capital();
+
+//      Getting capital type
+            input_savings_capital.setActionCommand("Deposit");
+            input_withdrawals_capital.setActionCommand("Withdrawal");
+            String capital_type = input_capital_group.getSelection().getActionCommand();
+
+//      Gettting bank name
+            String bank_name = input_capital_bank_name.getText();
+
+//      Getting capital date
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+            formater.format(input_capital_date.getDate());
+            String capital_date = formater.format(cal.getTime()).toString();
+
+//      Getting capital value
+            String unformatted_capital_value = input_capital_amount.getText();
+            String formatted_capital_value = unformatted_capital_value.replaceAll("[^0-9.]", "");
+            Double capital_value = Double.parseDouble(formatted_capital_value);
+
+//      Getting capital addtional details
+            String capital_details = input_capital_addtional_information.getText();
+
+            int result = cap.setCapital(capital_date, capital_type, bank_name, capital_details, capital_value);
 
             if (result == 1) {
-                Success_Message message = new Success_Message();
-                message.setMessage("Transaction has been successfully added !");
-                message.setVisible(true);
+                displaySuccessMessage("Capital transaction successfully added !");
+                refreshCapitalPanel();
+                resetCapitalValues();
+                setCapitalSubmitInterface();
             } else {
-                Error_Message message = new Error_Message();
-                message.setMessage("We've encountered a problem in recording the transaction. Please contact system administrator");
-                message.setVisible(true);
+                displayCustomErrorMessage("Error : Unable to add capital transaction into the system");
             }
 
-            monthlyTransactions();
-
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
-        } finally {
-            transaction_category.clearSelection();
-            transaction_date.setText(currentDate);
-            transaction_amount.setText(null);
+            displayErrorMessage(e);
         }
-    }//GEN-LAST:event_jButton3MouseClicked
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    }//GEN-LAST:event_button_submit_capitalMouseClicked
 
-        main_income.setActionCommand("Main");
-        other_income.setActionCommand("Other");
+    private void button_submit_capitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_submit_capitalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_submit_capitalActionPerformed
 
-        String i_category = income_category.getSelection().getActionCommand();
-        String i_date = income_date.getText();
-        String i_amount = income_amount.getText();
+    private void input_expense_typeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_expense_typeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_input_expense_typeActionPerformed
 
-        Income new_income = new Income();
+    private void button_administrator_loginMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_administrator_loginMouseClicked
 
         try {
-            int result = new_income.setIncome(i_category, i_amount, i_date);
+            String admin_password = new String(input_administrator_password.getPassword());
 
-            if (result == 1) {
-                Success_Message message = new Success_Message();
-                message.setMessage("Income has been successfully added !");
-                message.setVisible(true);
-            } else {
-                Error_Message message = new Error_Message();
-                message.setMessage("We've encountered a problem in recording the incone. Please contact system administrator");
-                message.setVisible(true);
+            if (admin_password.equals("c1")) {
+
+                dashboard_panel.setVisible(false);
+                capital_panel.setVisible(false);
+                income_panel.setVisible(false);
+                expense_panel.setVisible(false);
+                administrator_panel.setVisible(false);
+                admin_dashboard_panel.setVisible(true);
+            }else{
+                incorrect_password_label.setVisible(true);
             }
 
-            monthlyIncome();
-
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
-        } finally {
-            income_category.clearSelection();
-            income_date.setText(currentDate);
-            income_amount.setText(null);
+            displayErrorMessage(e);
         }
-    }//GEN-LAST:event_jButton1MouseClicked
+    }//GEN-LAST:event_button_administrator_loginMouseClicked
 
-    private void jButton3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseEntered
+    private void input_administrator_passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_input_administrator_passwordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3MouseEntered
+    }//GEN-LAST:event_input_administrator_passwordActionPerformed
 
-    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-
-        String e_category = expense_category.getSelectedItem().toString();
-        String e_item = expense_item.getText();
-        String e_date = expense_date.getText();
-        String e_amount = expense_amount.getText();
-
-        Expense expense = new Expense();
+    private void capital_summary_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_capital_summary_tableMouseClicked
 
         try {
-            int result = expense.setExpense(e_category, e_item, e_date, e_amount);
 
-            if (result == 1) {
-                Success_Message message = new Success_Message();
-                message.setMessage("Expense has been successfully added !");
-                message.setVisible(true);
+            int capital_table_row = capital_summary_table.getSelectedRow();
+
+            String capital_id = capital_summary_table.getValueAt(capital_table_row, 0).toString();
+            String capital_date = capital_summary_table.getValueAt(capital_table_row, 1).toString();
+            String capital_type = capital_summary_table.getValueAt(capital_table_row, 2).toString();
+            String bank_name = capital_summary_table.getValueAt(capital_table_row, 3).toString();
+            String capital_details = capital_summary_table.getValueAt(capital_table_row, 4).toString();
+            String capital_amount = capital_summary_table.getValueAt(capital_table_row, 5).toString();
+
+            input_capital_date.setVisible(false);
+            update_capital_date.setVisible(true);
+
+            button_reset_capital_fields.setVisible(true);
+            button_submit_capital.setVisible(false);
+            button_update_capital.setVisible(true);
+
+            capital_transaction_label.setVisible(true);
+            capital_transaction_id.setVisible(true);
+
+            if (capital_type.equals("Deposit")) {
+                input_savings_capital.setSelected(true);
             } else {
-                Error_Message message = new Error_Message();
-                message.setMessage("We've encountered a problem in recording the expense. Please contact system administrator");
-                message.setVisible(true);
+                input_withdrawals_capital.setSelected(true);
             }
 
-            monthlyExpenses();
+            input_capital_bank_name.setText(bank_name);
+            update_capital_date.setText(capital_date);
+            input_capital_amount.setText(capital_amount);
+            input_capital_addtional_information.setText(capital_details);
+            capital_transaction_id.setText(capital_id);
 
         } catch (Exception e) {
-            Error_Message message = new Error_Message();
-            message.setMessage("Error :" + e.getMessage());
-            message.setVisible(true);
-        } finally {
-
-            expense_date.setText(currentDate);
-            expense_item.setText(null);
-            expense_amount.setText(null);
+            displayErrorMessage(e);
         }
-    }//GEN-LAST:event_jButton4MouseClicked
+    }//GEN-LAST:event_capital_summary_tableMouseClicked
 
-    private void jButton4MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4MouseEntered
+    private void button_update_capitalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_update_capitalMouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        try {
 
-    private void expense_categoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expense_categoryActionPerformed
+            Capital cap = new Capital();
+
+//      Getting capital transaction id
+            String capital_id = capital_transaction_id.getText();
+
+//      Getting capital type
+            input_savings_capital.setActionCommand("Deposit");
+            input_withdrawals_capital.setActionCommand("Withdrawal");
+            String capital_type = input_capital_group.getSelection().getActionCommand();
+
+//      Gettting bank name
+            String bank_name = input_capital_bank_name.getText();
+
+//      Getting capital date
+            String capital_date = update_capital_date.getText();
+
+//      Getting capital value
+            String unformatted_capital_value = input_capital_amount.getText();
+            String formatted_capital_value = unformatted_capital_value.replaceAll("[^0-9.]", "");
+            Double capital_value = Double.parseDouble(formatted_capital_value);
+
+//      Getting capital addtional details
+            String capital_details = input_capital_addtional_information.getText();
+
+            int result = cap.updateCapital(capital_id, capital_date, capital_type, bank_name, capital_details, capital_value);
+
+            if (result == 1) {
+                displaySuccessMessage("Capital transaction successfully updated !");
+                refreshCapitalPanel();
+                resetCapitalValues();
+                setCapitalSubmitInterface();
+
+            } else {
+                displayCustomErrorMessage("Error : Unable to update capital transaction");
+            }
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+
+    }//GEN-LAST:event_button_update_capitalMouseClicked
+
+    private void button_update_capitalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_update_capitalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_expense_categoryActionPerformed
+    }//GEN-LAST:event_button_update_capitalActionPerformed
+
+    private void button_reset_capital_fieldsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_reset_capital_fieldsMouseClicked
+
+        try {
+
+            resetCapitalValues();
+            setCapitalSubmitInterface();
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_reset_capital_fieldsMouseClicked
+
+    private void button_reset_capital_fieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reset_capital_fieldsActionPerformed
+
+    }//GEN-LAST:event_button_reset_capital_fieldsActionPerformed
+
+    private void income_summary_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_income_summary_tableMouseClicked
+
+        try {
+
+            int income_table_row = income_summary_table.getSelectedRow();
+
+            String income_id = income_summary_table.getValueAt(income_table_row, 0).toString();
+            String income_date = income_summary_table.getValueAt(income_table_row, 1).toString();
+            String income_category = income_summary_table.getValueAt(income_table_row, 2).toString();
+            String income_type = income_summary_table.getValueAt(income_table_row, 3).toString();
+            String income_details = income_summary_table.getValueAt(income_table_row, 4).toString();
+            String income_amount = income_summary_table.getValueAt(income_table_row, 5).toString();
+
+            input_income_date.setVisible(false);
+            update_income_date.setVisible(true);
+
+            button_reset_income_fields.setVisible(true);
+            button_submit_income.setVisible(false);
+            button_update_income.setVisible(true);
+
+            income_transaction_label.setVisible(true);
+            income_transaction_id.setVisible(true);
+
+            if (income_category.equals("Main")) {
+                input_main_income.setSelected(true);
+            } else {
+                input_other_income.setSelected(true);
+            }
+
+            input_income_type.setText(income_type);
+            update_income_date.setText(income_date);
+            input_income_amount.setText(income_amount);
+            input_income_addtional_information.setText(income_details);
+            income_transaction_id.setText(income_id);
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_income_summary_tableMouseClicked
+
+    private void button_submit_incomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_submit_incomeMouseClicked
+
+        try {
+
+            Income inc = new Income();
+
+//      Getting income category
+            input_main_income.setActionCommand("Main");
+            input_other_income.setActionCommand("Other");
+            String income_category = input_income_group.getSelection().getActionCommand();
+
+//      Gettting income method
+            String income_type = input_income_type.getText();
+
+//      Getting income date
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+            formater.format(input_income_date.getDate());
+            String income_date = formater.format(cal.getTime()).toString();
+
+//      Getting income value
+            String unformatted_income_value = input_income_amount.getText();
+            String formatted_income_value = unformatted_income_value.replaceAll("[^0-9.]", "");
+            Double income_value = Double.parseDouble(formatted_income_value);
+
+//      Getting Income addtional details
+            String income_details = input_income_addtional_information.getText();
+
+            int result = inc.setIncome(income_date, income_category, income_type, income_details, income_value);
+
+            if (result == 1) {
+                displaySuccessMessage("Income transaction successfully added !");
+                refreshIncomePanel();
+                resetIncomeValues();
+                setIncomeSubmitInterface();
+            } else {
+                displayCustomErrorMessage("Error : Unable to add income transaction into the system");
+            }
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_submit_incomeMouseClicked
+
+    private void button_submit_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_submit_incomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_submit_incomeActionPerformed
+
+    private void button_update_incomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_update_incomeMouseClicked
+
+        try {
+
+            Income inc = new Income();
+
+//      Getting income transaction id
+            String income_id = income_transaction_id.getText();
+
+//      Getting income category
+            input_main_income.setActionCommand("Main");
+            input_other_income.setActionCommand("Other");
+            String income_category = input_income_group.getSelection().getActionCommand();
+
+//      Gettting income type
+            String income_type = input_income_type.getText();
+
+//      Getting income date
+            String income_date = update_income_date.getText();
+
+//      Getting income value
+            String unformatted_income_value = input_income_amount.getText();
+            String formatted_income_value = unformatted_income_value.replaceAll("[^0-9.]", "");
+            Double income_value = Double.parseDouble(formatted_income_value);
+
+//      Getting income addtional details
+            String income_details = input_income_addtional_information.getText();
+
+            int result = inc.updateIncome(income_id, income_date, income_category, income_type, income_details, income_value);
+
+            if (result == 1) {
+                displaySuccessMessage("Income transaction successfully updated !");
+                refreshIncomePanel();
+                resetIncomeValues();
+                setIncomeSubmitInterface();
+
+            } else {
+                displayCustomErrorMessage("Error : Unable to update income transaction");
+            }
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_update_incomeMouseClicked
+
+    private void button_update_incomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_update_incomeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_update_incomeActionPerformed
+
+    private void button_reset_expense_fieldsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_reset_expense_fieldsMouseClicked
+
+        try {
+
+            resetExpenseValues();
+            setExpenseSubmitInterface();
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_reset_expense_fieldsMouseClicked
+
+    private void button_reset_expense_fieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_reset_expense_fieldsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_reset_expense_fieldsActionPerformed
+
+    private void button_submit_expenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_submit_expenseMouseClicked
+
+        try {
+
+            Expense exp = new Expense();
+
+//      Getting expense category
+            String expense_type = input_expense_type.getSelectedItem().toString();
+
+//      Gettting expense item
+            String expense_item = input_expense_item_name.getText();
+
+//      Getting expense date
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+            formater.format(input_expense_date.getDate());
+            String expense_date = formater.format(cal.getTime()).toString();
+
+//      Getting expense value
+            String unformatted_expense_value = input_expense_amount.getText();
+            String formatted_expense_value = unformatted_expense_value.replaceAll("[^0-9.]", "");
+            Double expense_value = Double.parseDouble(formatted_expense_value);
+
+//      Getting expense addtional details
+            String expense_details = input_expense_addtional_information.getText();
+
+            int result = exp.setExpense(expense_date, expense_type, expense_item, expense_details, expense_value);
+
+            if (result == 1) {
+                displaySuccessMessage("Expense transaction successfully added !");
+                refreshExpensePanel();
+                resetExpenseValues();
+                setExpenseSubmitInterface();
+            } else {
+                displayCustomErrorMessage("Error : Unable to add expense transaction into the system");
+            }
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_submit_expenseMouseClicked
+
+    private void button_submit_expenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_submit_expenseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_submit_expenseActionPerformed
+
+    private void button_update_expenseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_update_expenseMouseClicked
+
+        try {
+
+            Expense exp = new Expense();
+
+//      Getting expense transaction id
+            String expense_id = expense_transaction_id.getText();
+
+//      Getting expense category
+            String expense_type = input_expense_type.getSelectedItem().toString();
+
+//      Gettting expense item
+            String expense_item = input_expense_item_name.getText();
+
+//      Getting expense date
+            String expense_date = update_expense_date.getText();
+
+//      Getting expense value
+            String unformatted_expense_value = input_expense_amount.getText();
+            String formatted_expense_value = unformatted_expense_value.replaceAll("[^0-9.]", "");
+            Double expense_value = Double.parseDouble(formatted_expense_value);
+
+//      Getting expense addtional details
+            String expense_details = input_expense_addtional_information.getText();
+
+            int result = exp.updateExpense(expense_id, expense_date, expense_type, expense_item, expense_details, expense_value);
+
+            if (result == 1) {
+                displaySuccessMessage("Expense transaction successfully updated !");
+                refreshExpensePanel();
+                resetExpenseValues();
+                setExpenseSubmitInterface();
+
+            } else {
+                displayCustomErrorMessage("Error : Unable to update expense transaction");
+            }
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_button_update_expenseMouseClicked
+
+    private void button_update_expenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_update_expenseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_button_update_expenseActionPerformed
+
+    private void expense_summary_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expense_summary_tableMouseClicked
+
+        try {
+
+            int expense_table_row = expense_summary_table.getSelectedRow();
+
+            String expense_id = expense_summary_table.getValueAt(expense_table_row, 0).toString();
+            String expense_date = expense_summary_table.getValueAt(expense_table_row, 1).toString();
+            String expense_category = expense_summary_table.getValueAt(expense_table_row, 2).toString();
+            String expense_type = expense_summary_table.getValueAt(expense_table_row, 3).toString();
+            String expense_details = expense_summary_table.getValueAt(expense_table_row, 4).toString();
+            String expense_amount = expense_summary_table.getValueAt(expense_table_row, 5).toString();
+
+            input_expense_date.setVisible(false);
+            update_expense_date.setVisible(true);
+
+            button_reset_expense_fields.setVisible(true);
+            button_submit_expense.setVisible(false);
+            button_update_expense.setVisible(true);
+
+            expense_transaction_label.setVisible(true);
+            expense_transaction_id.setVisible(true);
+
+            input_expense_type.setSelectedItem(expense_category);
+            input_expense_item_name.setText(expense_type);
+            update_expense_date.setText(expense_date);
+            input_expense_amount.setText(expense_amount);
+            input_expense_addtional_information.setText(expense_details);
+            expense_transaction_id.setText(expense_id);
+
+        } catch (Exception e) {
+            displayErrorMessage(e);
+        }
+    }//GEN-LAST:event_expense_summary_tableMouseClicked
+
+    private void update_expense_dateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_update_expense_dateMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_update_expense_dateMouseClicked
+
+    private void income_statistics_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_income_statistics_tableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_income_statistics_tableMouseClicked
+
+    private void expense_statistics_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_expense_statistics_tableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_expense_statistics_tableMouseClicked
+
+    private void capital_statistics_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_capital_statistics_tableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_capital_statistics_tableMouseClicked
+
+    private void detailed_capital_statistics_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_detailed_capital_statistics_tableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_detailed_capital_statistics_tableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1819,152 +2196,123 @@ public class Home extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel apr_month_income;
-    private javax.swing.JLabel aug_month_income;
+    private javax.swing.JPanel admin_dashboard_panel;
+    private javax.swing.JLabel admin_icon;
+    private javax.swing.JLabel administrator_icon;
+    private javax.swing.JLabel administrator_label;
+    private javax.swing.JPanel administrator_panel;
     private javax.swing.JPanel balance_btn;
-    private javax.swing.JPanel btn_expenses;
-    private javax.swing.JPanel btn_home;
-    private javax.swing.JPanel btn_income;
-    private javax.swing.JPanel btn_savings;
-    private javax.swing.JPanel budget_summary_chart;
-    private javax.swing.JPanel contentpane;
-    private javax.swing.JLabel current_month_balance;
+    private javax.swing.JPanel button_administrator;
+    private javax.swing.JPanel button_administrator_login;
+    private javax.swing.JPanel button_capital;
+    private javax.swing.JPanel button_dashboard;
+    private javax.swing.JPanel button_expenses;
+    private javax.swing.JPanel button_income;
+    private javax.swing.JButton button_reset_capital_fields;
+    private javax.swing.JButton button_reset_expense_fields;
+    private javax.swing.JButton button_reset_income_fields;
+    private javax.swing.JButton button_submit_capital;
+    private javax.swing.JButton button_submit_expense;
+    private javax.swing.JButton button_submit_income;
+    private javax.swing.JButton button_update_capital;
+    private javax.swing.JButton button_update_expense;
+    private javax.swing.JButton button_update_income;
+    private javax.swing.JLabel capital_addtional_information_label2;
+    private javax.swing.JLabel capital_amount_label3;
+    private javax.swing.JLabel capital_date_label;
+    private javax.swing.JLabel capital_icon;
+    private javax.swing.JLabel capital_label;
+    private javax.swing.JLabel capital_method_label;
+    private javax.swing.JPanel capital_panel;
+    private javax.swing.JTable capital_statistics_table;
+    private javax.swing.JScrollPane capital_statistics_table_scroll;
+    private javax.swing.JTable capital_summary_table;
+    private javax.swing.JScrollPane capital_summary_table_scroll;
+    private javax.swing.JLabel capital_transaction_id;
+    private javax.swing.JLabel capital_transaction_label;
+    private javax.swing.JLabel capital_type_label;
+    private javax.swing.JPanel content_panel;
     private javax.swing.JLabel current_month_balance_stat;
     private javax.swing.JLabel current_month_expense_stat;
-    private javax.swing.JLabel current_month_expenses;
-    private javax.swing.JLabel current_month_income;
     private javax.swing.JLabel current_month_income_stat;
     private javax.swing.JLabel current_month_savings_stat;
-    private javax.swing.JLabel current_year_income;
-    private javax.swing.JLabel dec_month_income;
-    private javax.swing.JLabel e_bills;
-    private javax.swing.JLabel e_dry_food;
-    private javax.swing.JLabel e_emergency;
-    private javax.swing.JLabel e_emergency1;
-    private javax.swing.JLabel e_grocery;
-    private javax.swing.JLabel e_medication;
-    private javax.swing.JLabel e_tax;
-    private javax.swing.JLabel e_transport;
-    private javax.swing.JPanel excenses_panel;
-    private javax.swing.JTextField expense_amount;
-    private javax.swing.JComboBox<String> expense_category;
-    private javax.swing.JTextField expense_date;
-    private javax.swing.JTextField expense_item;
-    private javax.swing.JLabel feb_month_income;
-    private javax.swing.JPanel home_panel;
-    private javax.swing.JTextField income_amount;
-    private javax.swing.ButtonGroup income_category;
-    private javax.swing.JTextField income_date;
+    private javax.swing.JLabel dashboard_icon;
+    private javax.swing.JLabel dashboard_label;
+    private javax.swing.JPanel dashboard_panel;
+    private javax.swing.JTable detailed_capital_statistics_table;
+    private javax.swing.JScrollPane detailed_capital_statistics_table_scroll;
+    private javax.swing.JLabel expense_addtional_information_label;
+    private javax.swing.JScrollPane expense_addtional_information_scroll;
+    private javax.swing.JLabel expense_amount_label;
+    private javax.swing.JLabel expense_date_label;
+    private javax.swing.JLabel expense_item_name_label;
+    private javax.swing.JPanel expense_panel;
+    private javax.swing.JTable expense_statistics_table;
+    private javax.swing.JScrollPane expense_statistics_table_scroll;
+    private javax.swing.JTable expense_summary_table;
+    private javax.swing.JScrollPane expense_summary_table_scroll;
+    private javax.swing.JLabel expense_transaction_id;
+    private javax.swing.JLabel expense_transaction_label;
+    private javax.swing.JLabel expense_type_label;
+    private javax.swing.JLabel expenses_icon;
+    private javax.swing.JLabel expenses_label;
+    private javax.swing.JLabel income_addtional_information_label;
+    private javax.swing.JScrollPane income_addtional_information_scroll;
+    private javax.swing.JLabel income_amount_label;
+    private javax.swing.JLabel income_date_label;
+    private javax.swing.JLabel income_icon;
+    private javax.swing.JLabel income_label;
+    private javax.swing.JLabel income_method_label;
     private javax.swing.JPanel income_panel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JTable income_statistics_table;
+    private javax.swing.JScrollPane income_statistics_table_scroll;
+    private javax.swing.JTable income_summary_table;
+    private javax.swing.JLabel income_transaction_id;
+    private javax.swing.JLabel income_transaction_label;
+    private javax.swing.JLabel income_type_label;
+    private javax.swing.JScrollPane incomel_summary_table_scroll;
+    private javax.swing.JLabel incorrect_password_label;
+    private javax.swing.JPasswordField input_administrator_password;
+    private javax.swing.JTextArea input_capital_addtional_information;
+    private javax.swing.JScrollPane input_capital_addtional_information_scroll;
+    private javax.swing.JTextField input_capital_amount;
+    private javax.swing.JTextField input_capital_bank_name;
+    private org.jdesktop.swingx.JXDatePicker input_capital_date;
+    private javax.swing.ButtonGroup input_capital_group;
+    private javax.swing.JTextArea input_expense_addtional_information;
+    private javax.swing.JTextField input_expense_amount;
+    private org.jdesktop.swingx.JXDatePicker input_expense_date;
+    private javax.swing.JTextField input_expense_item_name;
+    private javax.swing.JComboBox<String> input_expense_type;
+    private javax.swing.JTextArea input_income_addtional_information;
+    private javax.swing.JTextField input_income_amount;
+    private org.jdesktop.swingx.JXDatePicker input_income_date;
+    private javax.swing.ButtonGroup input_income_group;
+    private javax.swing.JTextField input_income_type;
+    private javax.swing.JRadioButton input_main_income;
+    private javax.swing.JRadioButton input_other_income;
+    private javax.swing.JRadioButton input_savings_capital;
+    private javax.swing.JRadioButton input_withdrawals_capital;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
-    private javax.swing.JLabel jLabel34;
-    private javax.swing.JLabel jLabel35;
-    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel39;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel41;
-    private javax.swing.JLabel jLabel42;
-    private javax.swing.JLabel jLabel43;
-    private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
-    private javax.swing.JLabel jLabel46;
-    private javax.swing.JLabel jLabel47;
-    private javax.swing.JLabel jLabel48;
-    private javax.swing.JLabel jLabel49;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel50;
-    private javax.swing.JLabel jLabel51;
-    private javax.swing.JLabel jLabel52;
-    private javax.swing.JLabel jLabel53;
-    private javax.swing.JLabel jLabel54;
-    private javax.swing.JLabel jLabel55;
-    private javax.swing.JLabel jLabel56;
-    private javax.swing.JLabel jLabel58;
-    private javax.swing.JLabel jLabel59;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel62;
     private javax.swing.JLabel jLabel63;
     private javax.swing.JLabel jLabel64;
     private javax.swing.JLabel jLabel65;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
-    private javax.swing.JPanel jPanel12;
-    private javax.swing.JPanel jPanel13;
-    private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel17;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator10;
-    private javax.swing.JSeparator jSeparator11;
-    private javax.swing.JSeparator jSeparator12;
-    private javax.swing.JSeparator jSeparator13;
-    private javax.swing.JSeparator jSeparator14;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JSeparator jSeparator6;
-    private javax.swing.JSeparator jSeparator8;
-    private javax.swing.JSeparator jSeparator9;
-    private javax.swing.JLabel jan_month_income;
-    private javax.swing.JLabel jul_month_income;
-    private javax.swing.JLabel jun_month_income;
-    private javax.swing.JRadioButton main_income;
-    private javax.swing.JLabel mar_month_income;
-    private javax.swing.JLabel may_month_income;
-    private javax.swing.JLabel nov_month_income;
-    private javax.swing.JLabel oct_month_income;
-    private javax.swing.JRadioButton other_income;
-    private javax.swing.JPanel savings_panel;
-    private javax.swing.JLabel sep_month_income;
-    private javax.swing.JPanel sidepane;
-    private javax.swing.JRadioButton t_savings;
-    private javax.swing.JRadioButton t_withdrawals;
-    private javax.swing.JTextField transaction_amount;
-    private javax.swing.JLabel transaction_balance;
-    private javax.swing.ButtonGroup transaction_category;
-    private javax.swing.JTextField transaction_date;
-    private javax.swing.JTable transaction_summary;
+    private javax.swing.JLabel logo_icon;
+    private javax.swing.JLabel logo_label;
+    private javax.swing.JSeparator logo_separator;
+    private javax.swing.JPanel navigation_panel;
+    private javax.swing.JTextField update_capital_date;
+    private javax.swing.JTextField update_expense_date;
+    private javax.swing.JTextField update_income_date;
     // End of variables declaration//GEN-END:variables
-
 }

@@ -13,10 +13,7 @@ public class Income {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    public Income() {
-    }
-
-    public int setIncome(String category, String amount, String date) throws ClassNotFoundException, SQLException {
+    public int setIncome(String date, String category, String type, String descripition, Double amount) throws ClassNotFoundException, SQLException {
 
         DB_Connect.setConnection();
 
@@ -24,54 +21,51 @@ public class Income {
             Connection con = DB_Connect.getConnection();
             Statement st = con.createStatement();
 
-            query = "INSERT INTO income(i_category, i_date, i_amount) VALUES (?,?,?)";
+            query = "INSERT INTO income(i_date, i_category, i_type, i_add_details, i_amount) VALUES (?,?,?,?,?)";
             ps = con.prepareStatement(query);
-            ps.setString(1, category);
-            ps.setString(2, date);
-            ps.setString(3, amount);
+            ps.setString(1, date);
+            ps.setString(2, category);
+            ps.setString(3, type);
+            ps.setString(4, descripition);
+            ps.setDouble(5, amount);
             queryResult = ps.executeUpdate();
         }
         return queryResult;
     }
-
-    public String monthlyIncome(int month) throws SQLException, ClassNotFoundException {
+    
+    public int updateIncome(String id, String date, String category, String type, String descripition, Double amount) throws ClassNotFoundException, SQLException {
 
         DB_Connect.setConnection();
-
-        String month_income = "";
 
         if (DB_Connect.getConnectionStatus()) {
             Connection con = DB_Connect.getConnection();
             Statement st = con.createStatement();
 
-            query = "SELECT SUM(i_amount) AS monthly_income FROM income WHERE MONTH(i_date) = " + month;
-            rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                month_income = rs.getString("monthly_income");
-            }
+            query = "UPDATE income SET i_date=?, i_category=?, i_type=?, i_add_details=?, i_amount=? WHERE i_id=?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, date);
+            ps.setString(2, category);
+            ps.setString(3, type);
+            ps.setString(4, descripition);
+            ps.setDouble(5, amount);
+            ps.setString(6, id);
+            queryResult = ps.executeUpdate();
         }
-        return month_income;
+        return queryResult;
     }
-
-    public Double yearTotal() throws SQLException, ClassNotFoundException {
+    
+    public ResultSet getCurrentMonthIncomeTransactions(String month) throws ClassNotFoundException, SQLException {
 
         DB_Connect.setConnection();
-
-        Double month_income = null;
 
         if (DB_Connect.getConnectionStatus()) {
             Connection con = DB_Connect.getConnection();
             Statement st = con.createStatement();
 
-            query = "SELECT SUM(i_amount)AS monthly_total FROM income";
+            query = "SELECT i_id AS ID, i_date AS Date, i_category AS 'Category', i_type AS 'Type', i_add_details AS 'Addtional Details', i_amount AS 'Amount (Rs)' FROM income WHERE MONTH(i_date) = '" + month + "'";
             rs = st.executeQuery(query);
-
-            while (rs.next()) {
-                month_income = Double.parseDouble(rs.getString("monthly_total"));
-            }
         }
-        return month_income;
+        return rs;
     }
 
 }
