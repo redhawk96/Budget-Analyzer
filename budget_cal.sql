@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2019 at 06:11 PM
+-- Generation Time: Feb 22, 2019 at 06:22 PM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.1
 
@@ -37,6 +37,13 @@ CREATE TABLE `expenses` (
   `e_amount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `expenses`
+--
+
+INSERT INTO `expenses` (`e_id`, `e_date`, `e_category`, `e_item`, `e_add_details`, `e_amount`) VALUES
+(1, '2019-02-22', 'Bills', 'Electricity', 'Paid via BOC bank', 3500);
+
 -- --------------------------------------------------------
 
 --
@@ -52,6 +59,13 @@ CREATE TABLE `income` (
   `i_amount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `income`
+--
+
+INSERT INTO `income` (`i_id`, `i_date`, `i_category`, `i_type`, `i_add_details`, `i_amount`) VALUES
+(1, '2019-02-22', 'Other', 'Loan interest', '3% loan interest from fixed deposit', 4500);
+
 -- --------------------------------------------------------
 
 --
@@ -66,6 +80,14 @@ CREATE TABLE `savings` (
   `t_add_details` varchar(255) DEFAULT NULL,
   `t_amount` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `savings`
+--
+
+INSERT INTO `savings` (`t_id`, `t_date`, `t_category`, `t_type`, `t_add_details`, `t_amount`) VALUES
+(1, '2019-02-22', 'Deposit', 'BOC', 'John\'s account on Colombo branch', 3000),
+(2, '2019-02-23', 'Withdrawal', 'BOC', 'John\'s account on Colombo branch', 2000);
 
 --
 -- Indexes for dumped tables
@@ -97,19 +119,19 @@ ALTER TABLE `savings`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `income`
 --
 ALTER TABLE `income`
-  MODIFY `i_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `i_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `savings`
 --
 ALTER TABLE `savings`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
