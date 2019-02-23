@@ -10,15 +10,28 @@ import budget.analyzer.Income;
 import budget.analyzer.Capital;
 import budget.analyzer.Statistics;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.math.BigDecimal;
 import javax.swing.JPanel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -46,9 +59,7 @@ public class Home extends javax.swing.JFrame {
             admin_dashboard_panel.setVisible(false);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
 
     }
@@ -60,9 +71,7 @@ public class Home extends javax.swing.JFrame {
             panel.setBackground(new Color(12, 135, 235));
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -73,9 +82,7 @@ public class Home extends javax.swing.JFrame {
             panel.setBackground(new Color(11, 120, 209));
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -94,24 +101,78 @@ public class Home extends javax.swing.JFrame {
             current_year = yearFormat.format(date);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
+    }
+
+    String getNumberWithSeparator(double amount) {
+
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("en_US"));
+
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
+        symbols.setGroupingSeparator(',');
+        DecimalFormat seperatorFormatter = new DecimalFormat("###,###.##", symbols);
+
+        String amountWithSeparator = seperatorFormatter.format(amount).toString();
+
+        return amountWithSeparator;
     }
 
     void refreshCapitalPanel() {
 
         try {
 
+//          Creating a new table modle to pass database values to
+            DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Date", "Type", "Bank Name", "Addtional Details", "Amount"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             Capital cap = new Capital();
-            ResultSet rs = cap.getCurrentMonthCapitalTransactions(current_month);
-            capital_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
+            ResultSet rs = cap.geAllCapitalTransactions();
+
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs.next()) {
+                String id = "  " + rs.getString("ID");
+                String date = rs.getString("Date");;
+                String type = "  " + rs.getString("Type");
+                String bname = "  " + rs.getString("Bank Name");
+                String adetails = "  " + rs.getString("Addtional Details");
+                String amount = getNumberWithSeparator(rs.getDouble("Amount (Rs)")) + ".0  ";
+
+//              Passing row with database values through a loop
+                model.addRow(new Object[]{id, date, type, bname, adetails, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            capital_summary_table.setModel(model);
+
+//          To align text to right in a column 
+            DefaultTableCellRenderer rightAlignedCell = new DefaultTableCellRenderer();
+            rightAlignedCell.setHorizontalAlignment(JLabel.RIGHT);
+
+//          To align text to center in a column 
+            DefaultTableCellRenderer centerAlingedCell = new DefaultTableCellRenderer();
+            centerAlingedCell.setHorizontalAlignment(JLabel.CENTER);
+
+//          Setting width to colums in JTable
+            TableColumnModel columnModel = capital_summary_table.getColumnModel();
+
+            columnModel.getColumn(0).setPreferredWidth(30);
+
+            columnModel.getColumn(1).setPreferredWidth(100);
+//          Center aligned cell
+            columnModel.getColumn(1).setCellRenderer(centerAlingedCell);
+
+            columnModel.getColumn(2).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(90);
+            columnModel.getColumn(4).setPreferredWidth(200);
+
+            columnModel.getColumn(5).setPreferredWidth(120);
+//          Right aligned cell
+            columnModel.getColumn(5).setCellRenderer(rightAlignedCell);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -119,14 +180,57 @@ public class Home extends javax.swing.JFrame {
 
         try {
 
+//          Creating a new table modle to pass database values to
+            DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Date", "Category", "Type", "Addtional Details", "Amount"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             Income inc = new Income();
-            ResultSet rs = inc.getCurrentMonthIncomeTransactions(current_month);
-            income_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
+            ResultSet rs = inc.getCurrentMonthIncomeTransactions(current_month);;
+
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs.next()) {
+                String id = "  " + rs.getString("ID");
+                String date = rs.getString("Date");;
+                String category = "  " + rs.getString("Category");
+                String type = "  " + rs.getString("Type");
+                String adetails = "  " + rs.getString("Addtional Details");
+                String amount = getNumberWithSeparator(rs.getDouble("Amount (Rs)")) + ".0  ";
+
+//              Passing row with database values through a loop
+                model.addRow(new Object[]{id, date, category, type, adetails, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            income_summary_table.setModel(model);
+
+//          To align text to right in a column 
+            DefaultTableCellRenderer rightAlignedCell = new DefaultTableCellRenderer();
+            rightAlignedCell.setHorizontalAlignment(JLabel.RIGHT);
+
+//          To align text to center in a column 
+            DefaultTableCellRenderer centerAlingedCell = new DefaultTableCellRenderer();
+            centerAlingedCell.setHorizontalAlignment(JLabel.CENTER);
+
+//          Setting width to colums in JTable
+            TableColumnModel columnModel = income_summary_table.getColumnModel();
+
+            columnModel.getColumn(0).setPreferredWidth(30);
+
+            columnModel.getColumn(1).setPreferredWidth(100);
+//          Center aligned cell
+            columnModel.getColumn(1).setCellRenderer(centerAlingedCell);
+
+            columnModel.getColumn(2).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(120);
+            columnModel.getColumn(4).setPreferredWidth(200);
+
+            columnModel.getColumn(5).setPreferredWidth(120);
+//          Right aligned cell
+            columnModel.getColumn(5).setCellRenderer(rightAlignedCell);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -134,14 +238,57 @@ public class Home extends javax.swing.JFrame {
 
         try {
 
+//          Creating a new table modle to pass database values to
+            DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Date", "Type", "Item", "Addtional Details", "Amount"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             Expense exp = new Expense();
             ResultSet rs = exp.getCurrentMonthExpenseTransactions(current_month);
-            expense_summary_table.setModel(DbUtils.resultSetToTableModel(rs));
+
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs.next()) {
+                String id = "  " + rs.getString("ID");
+                String date = rs.getString("Date");;
+                String Type = "  " + rs.getString("Type");
+                String Item = "  " + rs.getString("Item");
+                String adetails = "  " + rs.getString("Addtional Details");
+                String amount = getNumberWithSeparator(rs.getDouble("Amount (Rs)")) + ".0  ";
+
+//              Passing row with database values through a loop
+                model.addRow(new Object[]{id, date, Type, Item, adetails, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            expense_summary_table.setModel(model);
+
+//          To align text to right in a column 
+            DefaultTableCellRenderer rightAlignedCell = new DefaultTableCellRenderer();
+            rightAlignedCell.setHorizontalAlignment(JLabel.RIGHT);
+
+//          To align text to center in a column 
+            DefaultTableCellRenderer centerAlingedCell = new DefaultTableCellRenderer();
+            centerAlingedCell.setHorizontalAlignment(JLabel.CENTER);
+
+//          Setting width to colums in JTable
+            TableColumnModel columnModel = expense_summary_table.getColumnModel();
+
+            columnModel.getColumn(0).setPreferredWidth(30);
+
+            columnModel.getColumn(1).setPreferredWidth(100);
+//          Center aligned cell
+            columnModel.getColumn(1).setCellRenderer(centerAlingedCell);
+
+            columnModel.getColumn(2).setPreferredWidth(80);
+            columnModel.getColumn(3).setPreferredWidth(120);
+            columnModel.getColumn(4).setPreferredWidth(200);
+
+            columnModel.getColumn(5).setPreferredWidth(120);
+//          Right aligned cell
+            columnModel.getColumn(5).setCellRenderer(rightAlignedCell);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -157,9 +304,7 @@ public class Home extends javax.swing.JFrame {
             input_capital_addtional_information.setText(null);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -175,9 +320,7 @@ public class Home extends javax.swing.JFrame {
             input_income_addtional_information.setText(null);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -194,9 +337,7 @@ public class Home extends javax.swing.JFrame {
             input_expense_addtional_information.setText(null);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -213,9 +354,7 @@ public class Home extends javax.swing.JFrame {
             capital_transaction_id.setVisible(false);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -232,9 +371,7 @@ public class Home extends javax.swing.JFrame {
             income_transaction_id.setVisible(false);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
@@ -251,55 +388,177 @@ public class Home extends javax.swing.JFrame {
             expense_transaction_id.setVisible(false);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
     void getStatistics() {
 
         try {
+
             Statistics stat = new Statistics(current_month);
 
-            current_month_savings_stat.setText(stat.getCapitalBalance().toString());
+            current_month_savings_stat.setText(getNumberWithSeparator(stat.getCapitalBalance()));
 
-            current_month_income_stat.setText(stat.getCurrentMonthIncomeBalance().toString());
+            current_month_income_stat.setText(getNumberWithSeparator(stat.getCurrentMonthIncomeBalance()));
 
-            current_month_expense_stat.setText(stat.getCurrentMonthExpenseBalance().toString());
+            current_month_expense_stat.setText(getNumberWithSeparator(stat.getCurrentMonthExpenseBalance()));
 
-            current_month_balance_stat.setText(stat.getCurrentMonthBalance().toString());
+            current_month_balance_stat.setText(getNumberWithSeparator(stat.getCurrentMonthBalance()));
+            
+//          To align text to right in a column 
+            DefaultTableCellRenderer rightAlignedCell = new DefaultTableCellRenderer();
+            rightAlignedCell.setHorizontalAlignment(JLabel.RIGHT);
 
+//          To align text to center in a column 
+            DefaultTableCellRenderer centerAlingedCell = new DefaultTableCellRenderer();
+            centerAlingedCell.setHorizontalAlignment(JLabel.CENTER);
+            
+  
+//          Expense Statistics
+//          Creating a new table modle to pass database values to
+            DefaultTableModel modelExpense = new DefaultTableModel(new String[]{"Expense Category", "Amount (Rs)"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             ResultSet rs = stat.getCurrentMonthExpenseTotal();
-            expense_statistics_table.setModel(DbUtils.resultSetToTableModel(rs));
 
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs.next()) {
+                String eCategory = " " + rs.getString("Expense Category");
+                String amount = getNumberWithSeparator(rs.getDouble("Amount")) + ".0  ";
+
+//              Passing row with database values through a loop
+                modelExpense.addRow(new Object[]{eCategory, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            expense_statistics_table.setModel(modelExpense);
+            
+//          Setting width to colums in JTable
+            TableColumnModel expenseColumnModel = expense_statistics_table.getColumnModel();
+            
+//          Right aligned cell
+            expenseColumnModel.getColumn(1).setCellRenderer(rightAlignedCell);
+//          End of expense statistics
+
+            
+           
+//          Income Statistics
+//          Creating a new table modle to pass database values to
+            DefaultTableModel modelIncome = new DefaultTableModel(new String[]{"Income Category", "Amount (Rs)"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             ResultSet rs1 = stat.getCurrentMonthIncomeTotal();
-            income_statistics_table.setModel(DbUtils.resultSetToTableModel(rs1));
 
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs1.next()) {
+                String eCategory = " " + rs1.getString("Income Category");
+                String amount = getNumberWithSeparator(rs1.getDouble("Amount")) + ".0  ";
+
+//              Passing row with database values through a loop
+                modelIncome.addRow(new Object[]{eCategory, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            income_statistics_table.setModel(modelIncome);
+            
+            
+//          Setting width to colums in JTable
+            TableColumnModel incomeColumnModel = income_statistics_table.getColumnModel();
+            
+//          Right aligned cell
+            incomeColumnModel.getColumn(1).setCellRenderer(rightAlignedCell);
+//          End of income statistics
+
+
+
+//          Capital Statistics
+//          Creating a new table modle to pass database values to
+            DefaultTableModel modelCapital = new DefaultTableModel(new String[]{"Capital Category", "Amount (Rs)"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             ResultSet rs2 = stat.getCurrentMonthCapitalTotal();
-            capital_statistics_table.setModel(DbUtils.resultSetToTableModel(rs2));
 
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs2.next()) {
+                String eCategory = " " + rs2.getString("Capital Category");
+                String amount = getNumberWithSeparator(rs2.getDouble("Amount")) + ".0  ";
+
+//              Passing row with database values through a loop
+                modelCapital.addRow(new Object[]{eCategory, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            capital_statistics_table.setModel(modelCapital);
+            
+//          Setting width to colums in JTable
+            TableColumnModel capitalColumnModel = capital_statistics_table.getColumnModel();
+            
+//          Right aligned cell
+            capitalColumnModel.getColumn(1).setCellRenderer(rightAlignedCell);
+//          End of Capital statistics
+
+
+
+//          Detailed capital
+//          Creating a new table modle to pass database values to
+            DefaultTableModel modelDetailedCapital = new DefaultTableModel(new String[]{"Capital Transaction Date", "Capital Category", "Bank Name", "Capital Value (Rs)"}, 0);
+
+//          Creating capital object and calling method to get the resultset
             ResultSet rs3 = stat.getDetailedCapitalBlance();
-            detailed_capital_statistics_table.setModel(DbUtils.resultSetToTableModel(rs3));
+
+//          Assigning database values to string object wise
+//          White spaces are to set space to table column
+            while (rs3.next()) {
+                String cdate = " " + rs3.getString("Capital Transaction Date");
+                String cCategory = " " + rs3.getString("Capital Category");
+                String bname = " " + rs3.getString("Bank Name");
+                String amount = getNumberWithSeparator(rs3.getDouble("Capital Value")) + ".0  ";
+
+//              Passing row with database values through a loop
+                modelDetailedCapital.addRow(new Object[]{cdate, cCategory, bname, amount});
+            }
+
+//          Setting model to be displayed in the JTable
+            detailed_capital_statistics_table.setModel(modelDetailedCapital);
+            
+//          Setting width to colums in JTable
+            TableColumnModel detailedCapitalColumnModel = detailed_capital_statistics_table.getColumnModel();
+            
+//          Right aligned cell
+            detailedCapitalColumnModel.getColumn(3).setCellRenderer(rightAlignedCell);
+//          End of Detailed capital statistics
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
-            e_message.setMessage(e.getMessage());
-            e_message.setVisible(true);
+            displayErrorMessage(e);
         }
     }
 
     void displaySuccessMessage(String message) {
 
         try {
-
-            Success_Message s_message = new Success_Message();
+            Success_Message s_message = new Success_Message(new javax.swing.JFrame(), true);
             s_message.setMessage(message);
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - s_message.getWidth()) / 2;
+            final int y = (screenSize.height - s_message.getHeight()) / 2;
+            s_message.setLocation(x, y);
             s_message.setVisible(true);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
+            Error_Message e_message = new Error_Message(new javax.swing.JFrame(), true);
             e_message.setMessage(e.getMessage());
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - e_message.getWidth()) / 2;
+            final int y = (screenSize.height - e_message.getHeight()) / 2;
+            e_message.setLocation(x, y);
             e_message.setVisible(true);
         }
     }
@@ -308,13 +567,25 @@ public class Home extends javax.swing.JFrame {
 
         try {
 
-            Error_Message e_message = new Error_Message();
+            Error_Message e_message = new Error_Message(new javax.swing.JFrame(), true);
             e_message.setMessage(e.getMessage());
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - e_message.getWidth()) / 2;
+            final int y = (screenSize.height - e_message.getHeight()) / 2;
+            e_message.setLocation(x, y);
             e_message.setVisible(true);
 
         } catch (Exception ex) {
-            Error_Message e_message = new Error_Message();
+            Error_Message e_message = new Error_Message(new javax.swing.JFrame(), true);
             e_message.setMessage(ex.getMessage());
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - e_message.getWidth()) / 2;
+            final int y = (screenSize.height - e_message.getHeight()) / 2;
+            e_message.setLocation(x, y);
             e_message.setVisible(true);
         }
     }
@@ -323,13 +594,25 @@ public class Home extends javax.swing.JFrame {
 
         try {
 
-            Error_Message e_message = new Error_Message();
+            Error_Message e_message = new Error_Message(new javax.swing.JFrame(), true);
             e_message.setMessage(message);
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - e_message.getWidth()) / 2;
+            final int y = (screenSize.height - e_message.getHeight()) / 2;
+            e_message.setLocation(x, y);
             e_message.setVisible(true);
 
         } catch (Exception e) {
-            Error_Message e_message = new Error_Message();
+            Error_Message e_message = new Error_Message(new javax.swing.JFrame(), true);
             e_message.setMessage(e.getMessage());
+
+            final Toolkit toolkit = Toolkit.getDefaultToolkit();
+            final Dimension screenSize = toolkit.getScreenSize();
+            final int x = (screenSize.width - e_message.getWidth()) / 2;
+            final int y = (screenSize.height - e_message.getHeight()) / 2;
+            e_message.setLocation(x, y);
             e_message.setVisible(true);
         }
     }
@@ -462,10 +745,14 @@ public class Home extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Budget Analyzer");
-        setMaximumSize(new java.awt.Dimension(1005, 620));
         setMinimumSize(new java.awt.Dimension(1005, 620));
         setResizable(false);
         setSize(new java.awt.Dimension(1005, 620));
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         navigation_panel.setBackground(new java.awt.Color(51, 51, 51));
@@ -967,15 +1254,19 @@ public class Home extends javax.swing.JFrame {
         capital_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
         capital_summary_table.setIntercellSpacing(new java.awt.Dimension(0, 0));
         capital_summary_table.setRowHeight(25);
-        capital_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
-        capital_summary_table.setShowHorizontalLines(false);
-        capital_summary_table.setShowVerticalLines(false);
+        capital_summary_table.setSelectionBackground(new java.awt.Color(0, 102, 153));
+        capital_summary_table.setSelectionForeground(new java.awt.Color(204, 204, 204));
         capital_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 capital_summary_tableMouseClicked(evt);
             }
         });
         capital_summary_table_scroll.setViewportView(capital_summary_table);
+        if (capital_summary_table.getColumnModel().getColumnCount() > 0) {
+            capital_summary_table.getColumnModel().getColumn(0).setMinWidth(5);
+            capital_summary_table.getColumnModel().getColumn(0).setPreferredWidth(5);
+            capital_summary_table.getColumnModel().getColumn(0).setMaxWidth(5);
+        }
 
         capital_panel.add(capital_summary_table_scroll, new org.netbeans.lib.awtextra.AbsoluteConstraints(18, 11, 718, 303));
 
@@ -1032,6 +1323,7 @@ public class Home extends javax.swing.JFrame {
 
         button_submit_capital.setBackground(new java.awt.Color(33, 150, 243));
         button_submit_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_capital.setForeground(new java.awt.Color(255, 255, 255));
         button_submit_capital.setText("Submit");
         button_submit_capital.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1067,6 +1359,7 @@ public class Home extends javax.swing.JFrame {
 
         button_update_capital.setBackground(new java.awt.Color(33, 150, 243));
         button_update_capital.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_capital.setForeground(new java.awt.Color(255, 255, 255));
         button_update_capital.setText("Update");
         button_update_capital.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1082,6 +1375,7 @@ public class Home extends javax.swing.JFrame {
 
         button_reset_capital_fields.setBackground(new java.awt.Color(33, 150, 243));
         button_reset_capital_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_capital_fields.setForeground(new java.awt.Color(255, 255, 255));
         button_reset_capital_fields.setText("Reset");
         button_reset_capital_fields.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1156,6 +1450,7 @@ public class Home extends javax.swing.JFrame {
 
         button_reset_income_fields.setBackground(new java.awt.Color(33, 150, 243));
         button_reset_income_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_income_fields.setForeground(new java.awt.Color(255, 255, 255));
         button_reset_income_fields.setText("Reset");
         button_reset_income_fields.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1199,9 +1494,8 @@ public class Home extends javax.swing.JFrame {
         income_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
         income_summary_table.setIntercellSpacing(new java.awt.Dimension(0, 0));
         income_summary_table.setRowHeight(25);
-        income_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
-        income_summary_table.setShowHorizontalLines(false);
-        income_summary_table.setShowVerticalLines(false);
+        income_summary_table.setSelectionBackground(new java.awt.Color(0, 102, 153));
+        income_summary_table.setSelectionForeground(new java.awt.Color(204, 204, 204));
         income_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 income_summary_tableMouseClicked(evt);
@@ -1219,6 +1513,7 @@ public class Home extends javax.swing.JFrame {
 
         button_submit_income.setBackground(new java.awt.Color(33, 150, 243));
         button_submit_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_income.setForeground(new java.awt.Color(255, 255, 255));
         button_submit_income.setText("Submit");
         button_submit_income.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1234,6 +1529,7 @@ public class Home extends javax.swing.JFrame {
 
         button_update_income.setBackground(new java.awt.Color(33, 150, 243));
         button_update_income.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_income.setForeground(new java.awt.Color(255, 255, 255));
         button_update_income.setText("Update");
         button_update_income.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1332,10 +1628,10 @@ public class Home extends javax.swing.JFrame {
         expense_summary_table.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         expense_summary_table.setFillsViewportHeight(true);
         expense_summary_table.setGridColor(new java.awt.Color(255, 255, 255));
+        expense_summary_table.setIntercellSpacing(new java.awt.Dimension(0, 0));
         expense_summary_table.setRowHeight(25);
-        expense_summary_table.setSelectionBackground(new java.awt.Color(102, 102, 102));
-        expense_summary_table.setShowHorizontalLines(false);
-        expense_summary_table.setShowVerticalLines(false);
+        expense_summary_table.setSelectionBackground(new java.awt.Color(0, 102, 153));
+        expense_summary_table.setSelectionForeground(new java.awt.Color(204, 204, 204));
         expense_summary_table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 expense_summary_tableMouseClicked(evt);
@@ -1359,6 +1655,7 @@ public class Home extends javax.swing.JFrame {
 
         button_reset_expense_fields.setBackground(new java.awt.Color(33, 150, 243));
         button_reset_expense_fields.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_reset_expense_fields.setForeground(new java.awt.Color(255, 255, 255));
         button_reset_expense_fields.setText("Reset");
         button_reset_expense_fields.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1374,6 +1671,7 @@ public class Home extends javax.swing.JFrame {
 
         button_submit_expense.setBackground(new java.awt.Color(33, 150, 243));
         button_submit_expense.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_submit_expense.setForeground(new java.awt.Color(255, 255, 255));
         button_submit_expense.setText("Submit");
         button_submit_expense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1389,6 +1687,7 @@ public class Home extends javax.swing.JFrame {
 
         button_update_expense.setBackground(new java.awt.Color(33, 150, 243));
         button_update_expense.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        button_update_expense.setForeground(new java.awt.Color(255, 255, 255));
         button_update_expense.setText("Update");
         button_update_expense.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1536,6 +1835,7 @@ public class Home extends javax.swing.JFrame {
             administrator_panel.setVisible(false);
             admin_dashboard_panel.setVisible(false);
 
+            resetCapitalValues();
             refreshCapitalPanel();
             setCapitalSubmitInterface();
 
@@ -1584,6 +1884,7 @@ public class Home extends javax.swing.JFrame {
             administrator_panel.setVisible(false);
             admin_dashboard_panel.setVisible(false);
 
+            resetIncomeValues();
             refreshIncomePanel();
             setIncomeSubmitInterface();
 
@@ -1610,7 +1911,7 @@ public class Home extends javax.swing.JFrame {
             admin_dashboard_panel.setVisible(false);
 
             incorrect_password_label.setVisible(false);
-            
+
         } catch (Exception e) {
             displayErrorMessage(e);
         }
@@ -1633,6 +1934,7 @@ public class Home extends javax.swing.JFrame {
             administrator_panel.setVisible(false);
             admin_dashboard_panel.setVisible(false);
 
+            resetExpenseValues();
             refreshExpensePanel();
             setExpenseSubmitInterface();
 
@@ -1690,8 +1992,7 @@ public class Home extends javax.swing.JFrame {
 //      Getting capital date
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-            formater.format(input_capital_date.getDate());
-            String capital_date = formater.format(cal.getTime()).toString();
+            String capital_date = formater.format(input_capital_date.getDate());;
 
 //      Getting capital value
             String unformatted_capital_value = input_capital_amount.getText();
@@ -1739,7 +2040,7 @@ public class Home extends javax.swing.JFrame {
                 expense_panel.setVisible(false);
                 administrator_panel.setVisible(false);
                 admin_dashboard_panel.setVisible(true);
-            }else{
+            } else {
                 incorrect_password_label.setVisible(true);
             }
 
@@ -1758,12 +2059,12 @@ public class Home extends javax.swing.JFrame {
 
             int capital_table_row = capital_summary_table.getSelectedRow();
 
-            String capital_id = capital_summary_table.getValueAt(capital_table_row, 0).toString();
-            String capital_date = capital_summary_table.getValueAt(capital_table_row, 1).toString();
-            String capital_type = capital_summary_table.getValueAt(capital_table_row, 2).toString();
-            String bank_name = capital_summary_table.getValueAt(capital_table_row, 3).toString();
-            String capital_details = capital_summary_table.getValueAt(capital_table_row, 4).toString();
-            String capital_amount = capital_summary_table.getValueAt(capital_table_row, 5).toString();
+            String capital_id = capital_summary_table.getValueAt(capital_table_row, 0).toString().trim();
+            String capital_date = capital_summary_table.getValueAt(capital_table_row, 1).toString().trim();
+            String capital_type = capital_summary_table.getValueAt(capital_table_row, 2).toString().trim();
+            String bank_name = capital_summary_table.getValueAt(capital_table_row, 3).toString().trim();
+            String capital_details = capital_summary_table.getValueAt(capital_table_row, 4).toString().trim();
+            String capital_amount = capital_summary_table.getValueAt(capital_table_row, 5).toString().trim();
 
             input_capital_date.setVisible(false);
             update_capital_date.setVisible(true);
@@ -1788,7 +2089,7 @@ public class Home extends javax.swing.JFrame {
             capital_transaction_id.setText(capital_id);
 
         } catch (Exception e) {
-            displayErrorMessage(e);
+//            displayErrorMessage(e);
         }
     }//GEN-LAST:event_capital_summary_tableMouseClicked
 
@@ -1864,12 +2165,12 @@ public class Home extends javax.swing.JFrame {
 
             int income_table_row = income_summary_table.getSelectedRow();
 
-            String income_id = income_summary_table.getValueAt(income_table_row, 0).toString();
-            String income_date = income_summary_table.getValueAt(income_table_row, 1).toString();
-            String income_category = income_summary_table.getValueAt(income_table_row, 2).toString();
-            String income_type = income_summary_table.getValueAt(income_table_row, 3).toString();
-            String income_details = income_summary_table.getValueAt(income_table_row, 4).toString();
-            String income_amount = income_summary_table.getValueAt(income_table_row, 5).toString();
+            String income_id = income_summary_table.getValueAt(income_table_row, 0).toString().trim();
+            String income_date = income_summary_table.getValueAt(income_table_row, 1).toString().trim();
+            String income_category = income_summary_table.getValueAt(income_table_row, 2).toString().trim();
+            String income_type = income_summary_table.getValueAt(income_table_row, 3).toString().trim();
+            String income_details = income_summary_table.getValueAt(income_table_row, 4).toString().trim();
+            String income_amount = income_summary_table.getValueAt(income_table_row, 5).toString().trim();
 
             input_income_date.setVisible(false);
             update_income_date.setVisible(true);
@@ -1894,7 +2195,7 @@ public class Home extends javax.swing.JFrame {
             income_transaction_id.setText(income_id);
 
         } catch (Exception e) {
-            displayErrorMessage(e);
+//            displayErrorMessage(e);
         }
     }//GEN-LAST:event_income_summary_tableMouseClicked
 
@@ -1915,8 +2216,7 @@ public class Home extends javax.swing.JFrame {
 //      Getting income date
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-            formater.format(input_income_date.getDate());
-            String income_date = formater.format(cal.getTime()).toString();
+            String income_date = formater.format(input_income_date.getDate());
 
 //      Getting income value
             String unformatted_income_value = input_income_amount.getText();
@@ -2026,8 +2326,7 @@ public class Home extends javax.swing.JFrame {
 //      Getting expense date
             Calendar cal = Calendar.getInstance();
             SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-            formater.format(input_expense_date.getDate());
-            String expense_date = formater.format(cal.getTime()).toString();
+            String expense_date = formater.format(input_expense_date.getDate());
 
 //      Getting expense value
             String unformatted_expense_value = input_expense_amount.getText();
@@ -2110,12 +2409,12 @@ public class Home extends javax.swing.JFrame {
 
             int expense_table_row = expense_summary_table.getSelectedRow();
 
-            String expense_id = expense_summary_table.getValueAt(expense_table_row, 0).toString();
-            String expense_date = expense_summary_table.getValueAt(expense_table_row, 1).toString();
-            String expense_category = expense_summary_table.getValueAt(expense_table_row, 2).toString();
-            String expense_type = expense_summary_table.getValueAt(expense_table_row, 3).toString();
-            String expense_details = expense_summary_table.getValueAt(expense_table_row, 4).toString();
-            String expense_amount = expense_summary_table.getValueAt(expense_table_row, 5).toString();
+            String expense_id = expense_summary_table.getValueAt(expense_table_row, 0).toString().trim();
+            String expense_date = expense_summary_table.getValueAt(expense_table_row, 1).toString().trim();
+            String expense_category = expense_summary_table.getValueAt(expense_table_row, 2).toString().trim();
+            String expense_type = expense_summary_table.getValueAt(expense_table_row, 3).toString().trim();
+            String expense_details = expense_summary_table.getValueAt(expense_table_row, 4).toString().trim();
+            String expense_amount = expense_summary_table.getValueAt(expense_table_row, 5).toString().trim();
 
             input_expense_date.setVisible(false);
             update_expense_date.setVisible(true);
@@ -2135,7 +2434,7 @@ public class Home extends javax.swing.JFrame {
             expense_transaction_id.setText(expense_id);
 
         } catch (Exception e) {
-            displayErrorMessage(e);
+//            displayErrorMessage(e);
         }
     }//GEN-LAST:event_expense_summary_tableMouseClicked
 
@@ -2158,6 +2457,10 @@ public class Home extends javax.swing.JFrame {
     private void detailed_capital_statistics_tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_detailed_capital_statistics_tableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_detailed_capital_statistics_tableMouseClicked
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formKeyPressed
 
     /**
      * @param args the command line arguments

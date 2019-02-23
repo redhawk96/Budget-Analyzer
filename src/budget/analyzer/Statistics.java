@@ -70,7 +70,7 @@ public class Statistics {
             Connection con = DB_Connect.getConnection();
             Statement st = con.createStatement();
 
-            query = "SELECT t_date AS 'Capita Transaction Date', t_category AS 'Capital Category', t_type AS 'Bank Name', t_amount AS 'Capital Value' FROM savings ORDER BY savings.t_date DESC";
+            query = "SELECT t_date AS 'Capital Transaction Date', t_category AS 'Capital Category', t_type AS 'Bank Name', t_amount AS 'Capital Value' FROM savings ORDER BY savings.t_date DESC";
             rs = st.executeQuery(query);
         }
         return rs;

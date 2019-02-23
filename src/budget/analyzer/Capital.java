@@ -54,7 +54,7 @@ public class Capital {
         return queryResult;
     }
 
-    public ResultSet getCurrentMonthCapitalTransactions(String month) throws ClassNotFoundException, SQLException {
+    public ResultSet geAllCapitalTransactions() throws ClassNotFoundException, SQLException {
 
         DB_Connect.setConnection();
 
@@ -62,7 +62,7 @@ public class Capital {
             Connection con = DB_Connect.getConnection();
             Statement st = con.createStatement();
 
-            query = "SELECT t_id AS ID, t_date AS Date, t_category AS 'Type', t_type AS 'Bank Name', t_add_details AS 'Addtional Details', t_amount AS 'Amount (Rs)' FROM savings WHERE MONTH(t_date) = '" + month + "'";
+            query = "SELECT t_id AS ID, t_date AS Date, t_category AS 'Type', t_type AS 'Bank Name', t_add_details AS 'Addtional Details', t_amount AS 'Amount (Rs)' FROM savings";
             rs = st.executeQuery(query);
         }
         return rs;
