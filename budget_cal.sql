@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2019 at 06:22 PM
+-- Generation Time: May 21, 2019 at 07:28 AM
 -- Server version: 10.1.30-MariaDB
 -- PHP Version: 7.2.1
 
@@ -42,7 +42,10 @@ CREATE TABLE `expenses` (
 --
 
 INSERT INTO `expenses` (`e_id`, `e_date`, `e_category`, `e_item`, `e_add_details`, `e_amount`) VALUES
-(1, '2019-02-22', 'Bills', 'Electricity', 'Paid via BOC bank', 3500);
+(1, '2019-05-21', 'Tax', 'Land', 'paid by post colombo', 2000),
+(2, '2019-05-21', 'Bills', 'Electricty', 'paid by post colombo', 2000),
+(3, '2019-05-21', 'Bills', 'Electricty', 'WY Car Sale', 16000),
+(4, '2019-05-21', 'Transport', 'School', 'PickMe', 4800);
 
 -- --------------------------------------------------------
 
@@ -64,7 +67,11 @@ CREATE TABLE `income` (
 --
 
 INSERT INTO `income` (`i_id`, `i_date`, `i_category`, `i_type`, `i_add_details`, `i_amount`) VALUES
-(1, '2019-02-22', 'Other', 'Loan interest', '3% loan interest from fixed deposit', 4500);
+(1, '2019-02-23', 'Main', 'Monthly income', 'Inheritance', 3000),
+(2, '2019-03-09', 'Main', 'Monthly income', 'Inheritance', 2000),
+(3, '2019-01-01', 'Main', 'Monthly Income', 'Inheritance', 2000),
+(4, '2019-05-21', 'Other', 'Housing Rental', 'Katharagama', 25000),
+(5, '2019-05-21', 'Main', 'Vehicle Sale', '2019 Toyota Prius', 750000);
 
 -- --------------------------------------------------------
 
@@ -86,8 +93,12 @@ CREATE TABLE `savings` (
 --
 
 INSERT INTO `savings` (`t_id`, `t_date`, `t_category`, `t_type`, `t_add_details`, `t_amount`) VALUES
-(1, '2019-02-22', 'Deposit', 'BOC', 'John\'s account on Colombo branch', 3000),
-(2, '2019-02-23', 'Withdrawal', 'BOC', 'John\'s account on Colombo branch', 2000);
+(1, '2019-05-21', 'Deposit', 'BOC', '960533606V', 20000),
+(2, '2019-05-21', 'Withdrawal', 'BOC', '960563506V', 2500),
+(3, '2019-05-21', 'Deposit', 'BOC', '960533606V', 2500),
+(4, '2019-04-20', 'Withdrawal', 'BOC', '960533606V', 18000),
+(5, '2019-04-21', 'Deposit', 'HNB', '940533606V', 22000),
+(6, '2019-04-21', 'Deposit', 'Commercial', '940533606V', 20000);
 
 --
 -- Indexes for dumped tables
@@ -119,19 +130,19 @@ ALTER TABLE `savings`
 -- AUTO_INCREMENT for table `expenses`
 --
 ALTER TABLE `expenses`
-  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `e_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `income`
 --
 ALTER TABLE `income`
-  MODIFY `i_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `i_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `savings`
 --
 ALTER TABLE `savings`
-  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `t_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
